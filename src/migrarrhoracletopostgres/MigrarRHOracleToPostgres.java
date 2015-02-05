@@ -29,6 +29,15 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
+        if (false) {
+            migrarEmpleados();
+        } else {
+            migrarJefes();
+        }
+
+    }
+    
+    private static void migrarEmpleados() {
         try {
             Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
             Driver oraclePostgres = new org.postgresql.Driver();
@@ -206,7 +215,47 @@ public class MigrarRHOracleToPostgres {
         } catch (SQLException ex) {
             Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private static void migrarJefes() {
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver oraclePostgres = new org.postgresql.Driver();
+            
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(oraclePostgres);
 
+            Connection connOracle = DriverManager.getConnection("jdbc:oracle:thin:@//10.1.0.44:1521/cimav14XDB.netmultix.cimav.edu.mx", "almacen", "afrika");
+            Connection connPostgres = DriverManager.getConnection("jdbc:postgresql://10.0.4.40:5432/rh_development", "rh_user", "rh_1ser");
+
+            try (Statement stmtOra = connOracle.createStatement(); Statement stmtPost = connPostgres.createStatement()) {
+                String sql = "SELECT e.NO01_CVE_EMP, e.NO01_JEFE FROM NO01 e where e.NO01_STATUS != 'B'";
+                ResultSet rsOra = stmtOra.executeQuery(sql);
+                
+                while(rsOra.next()){
+                    String cveEmp = rsOra.getString("NO01_CVE_EMP").trim();
+                    String jefe = rsOra.getString("NO01_JEFE").trim();
+                    
+                    int idJefe = 0;
+                    sql = "select e.id from empleados e where e.code = '" + jefe.trim() + "';";
+                    ResultSet rsPost = stmtPost.executeQuery(sql);
+                    while (rsPost.next()) {
+                        idJefe = rsPost.getInt("id");
+                    }                    
+                    String sqlMigration = "UPDATE empleados SET id_jefe = " + idJefe + " WHERE code = '" + cveEmp + "';";
+                 
+                    System.out.println("" + sqlMigration);
+                }
+                
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connOracle.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private static String makeDate(String fechaOra) {
