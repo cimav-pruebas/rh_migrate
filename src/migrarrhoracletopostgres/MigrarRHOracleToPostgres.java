@@ -150,12 +150,12 @@ public class MigrarRHOracleToPostgres {
                     int idDepto = 0;
                     String codigoDepto = "";
                     String nomDepto = "";
-                    sql = "select * from departamentos d where d.codigo = '" + cveDepto.trim() + "';";
+                    sql = "select * from departamentos d where d.code = '" + cveDepto.trim() + "';";
                     ResultSet rsPost = stmtPost.executeQuery(sql);
                     while (rsPost.next()) {
                         idDepto = rsPost.getInt("id");
-                        codigoDepto = rsPost.getString("codigo");
-                        nomDepto = rsPost.getString("nombre");
+                        codigoDepto = rsPost.getString("code");
+                        nomDepto = rsPost.getString("name");
                     }                    
                     int idTabulador = 0;
                     String codeTabulador = "";
