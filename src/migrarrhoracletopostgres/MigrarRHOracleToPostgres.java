@@ -29,7 +29,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        if (false) {
+        if (true) {
             migrarEmpleados();
         } else {
             migrarJefes();
@@ -179,7 +179,7 @@ public class MigrarRHOracleToPostgres {
                     String urlPhoto = "http://www.cimav.edu.mx/foto/" + cuentaCimav;
                     int idTipoEmpleado = 0;   
                     String fechaBaja = fechaFinContrato;
-                    String name = "";
+                    String name = apellidoPAt + " " + apellidoMat + " " + nombre;
                     
                     cveEmp = "'" + cveEmp + "'";
                     curp = "'" + curp + "'";
