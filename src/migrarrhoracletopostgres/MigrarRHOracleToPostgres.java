@@ -372,7 +372,7 @@ public class MigrarRHOracleToPostgres {
                     String dirColonia = stringQuoted(rsOra.getString("NO01_COLONIA"));
                     String dirCP = stringQuoted(rsOra.getString("NO01_CP"));
                     String telefono = stringQuoted(rsOra.getString("NO01_TELEFONO1") + ",  " + rsOra.getString("NO01_TELEFONO2"));
-                    String emailPersonal = stringQuoted(rsOra.getString("NO01_CORREO1") + "; " + rsOra.getString("NO01_CORREO2"));
+                    String emailPersonal = stringQuoted(rsOra.getString("NO01_EMAIL60"));// stringQuoted(rsOra.getString("NO01_CORREO1") + "; " + rsOra.getString("NO01_CORREO2"));
                     
                     String fechaNacimiento = makeDate(rsOra.getString("NO01_FECHA_NAC"));
                     
