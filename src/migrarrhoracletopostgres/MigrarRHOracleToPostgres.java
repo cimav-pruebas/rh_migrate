@@ -219,22 +219,23 @@ public class MigrarRHOracleToPostgres {
                 while (rsOra.next()) {
                     String cveEmp = rsOra.getString("NO01_CVE_EMP").trim();
                     int consecutivo = Integer.parseInt(cveEmp);
-                    String nomEmp = rsOra.getString("NO01_NOM_EMP").trim();
+                    cveEmp = stringQuoted(rsOra.getString("NO01_CVE_EMP"));
+                    String nomEmp = stringQuoted(rsOra.getString("NO01_NOM_EMP"));
                     
                     String cveDepto = rsOra.getString("NO01_depto").trim();
                     cveDepto = Strings.padStart(cveDepto, 5, '0');
                     
-                    String rfc = rsOra.getString("NO01_RFC_EMP").trim();
-                    String imss = rsOra.getString("NO01_CVE_IMSS").trim();
-                    String curp = rsOra.getString("NO01_CURP").trim();
+                    String rfc = stringQuoted(rsOra.getString("NO01_RFC_EMP"));
+                    String imss = stringQuoted(rsOra.getString("NO01_CVE_IMSS"));
+                    String curp = stringQuoted(rsOra.getString("NO01_CURP"));
 
                     String fechaIng = makeDate(rsOra.getString("NO01_FECHA_ING"));
 
                     String categoria = rsOra.getString("NO01_CATEGORIA").trim();
-                    String nomBanco = rsOra.getString("NO01_NOM_BANCO").trim();
+                    String nomBanco = stringQuoted(rsOra.getString("NO01_NOM_BANCO"));
                     int idBanco = nomBanco.contains("BANORTE") ? 0 : 9;
-                    String cuentaBanco = rsOra.getString("NO01_CTA_BANCO").trim();
-                    String regimen = rsOra.getString("NO01_REGIMEN").trim();
+                    String cuentaBanco = stringQuoted(rsOra.getString("NO01_CTA_BANCO"));
+                    String regimen = stringQuoted(rsOra.getString("NO01_REGIMEN"));
                     int idGrupo = 0;
                     if (regimen.contains("AYA")) {
                         idGrupo = 1;
@@ -247,7 +248,7 @@ public class MigrarRHOracleToPostgres {
                         idGrupo = 4;
                     }
                     int idTipoAntiguedad = 0;
-                    String tipoAnt = rsOra.getString("NO01_TIPO_ANT").trim();
+                    String tipoAnt = stringQuoted(rsOra.getString("NO01_TIPO_ANT"));
                     if (null != tipoAnt) {
                         switch (tipoAnt) {
                             case "I": // Investigación
@@ -262,7 +263,7 @@ public class MigrarRHOracleToPostgres {
                         }
                     }
                     int idSede = 0;
-                    String ubicacion = rsOra.getString("NO01_UBICACION").trim();
+                    String ubicacion = stringQuoted(rsOra.getString("NO01_UBICACION"));
                     if (null != ubicacion) {
                         switch (ubicacion) {
                             case "1": // chi
@@ -285,7 +286,7 @@ public class MigrarRHOracleToPostgres {
 
                     int idTipoContrato = rsOra.getInt("NO01_TIPO_CONTRATO");
                     int idTipoSni = 0;
-                    String sni = rsOra.getString("NO01_SNI").trim();
+                    String sni = stringQuoted(rsOra.getString("NO01_SNI"));
                     if ("NO APLICA".equals(sni.trim())) {
                         idTipoSni = 0;
                     } else if ("CANDIDATO".equals(sni.trim())) {
@@ -297,7 +298,7 @@ public class MigrarRHOracleToPostgres {
                     } else if ("NIVEL III".equals(sni.trim())) {
                         idTipoSni = 4;
                     }
-                    String numSni = rsOra.getString("NO01_NUM_SNI").trim();
+                    String numSni = stringQuoted(rsOra.getString("NO01_NUM_SNI"));
 
                     String fechaSNI = makeDate(rsOra.getString("NO01_FECHA_SNI"));
 
@@ -306,7 +307,7 @@ public class MigrarRHOracleToPostgres {
                     String apellidoMat = rsOra.getString("NO01_APELLIDO_MAT").trim();
                     String nombre = rsOra.getString("NO01_NOMBRE").trim();
                     String proyecto = rsOra.getString("NO01_PROYECTO").trim(); // TODO: Falta proyectos
-                    String clinica = rsOra.getString("NO01_CLINICA").trim();
+                    String clinica = stringQuoted(rsOra.getString("NO01_CLINICA"));
                     int idClinica = EClinica.getId(clinica);
 
 //                    String jefe = rsOra.getString("NO01_JEFE");
@@ -324,6 +325,7 @@ public class MigrarRHOracleToPostgres {
                     String codigoDepto = "";
                     String nomDepto = "";
                     sql = "select * from departamentos d where d.code like '%" + cveDepto.trim() + "';";
+                    cveDepto = stringQuoted(cveDepto);
                     ResultSet rsPostgress = stmtPostgress.executeQuery(sql);
                     while (rsPostgress.next()) {
                         idDepto = rsPostgress.getInt("id");
@@ -335,6 +337,7 @@ public class MigrarRHOracleToPostgres {
                     String codeTabulador = "";
                     String nameTabulador = "";
                     sql = "select * from tabulador d where d.code = '" + categoria.trim() + "';";
+                    categoria = stringQuoted(categoria);
                     rsPostgress = stmtPostgress.executeQuery(sql);
                     while (rsPostgress.next()) {
                         idTabulador = rsPostgress.getInt("id");
@@ -352,7 +355,10 @@ public class MigrarRHOracleToPostgres {
 
                     int idStatus = 0;
                     int idProyecto = 0;
-                    String urlPhoto = "http://www.cimav.edu.mx/foto/" + cuentaCimav;
+                    
+                    String urlPhoto = stringQuoted("http://www.cimav.edu.mx/foto/" + cuentaCimav);
+                    cuentaCimav = stringQuoted(cuentaCimav);
+                    
                     int idTipoEmpleado = 0;
                     
                     // Fecha de Baja es la FECHA_SAL que normalmente debe coincidir con FEC_FINIQUITO
@@ -362,31 +368,66 @@ public class MigrarRHOracleToPostgres {
                         System.out.println("FECHA BAJA: " + cveEmp + " >> " + fechaBaja);
                     }
                             
-                    String name = apellidoPAt + " " + apellidoMat + " " + nombre;
+                    String dirCalle = stringQuoted(rsOra.getString("NO01_DIRECCION"));
+                    String dirColonia = stringQuoted(rsOra.getString("NO01_COLONIA"));
+                    String dirCP = stringQuoted(rsOra.getString("NO01_CP"));
+                    String telefono = stringQuoted(rsOra.getString("NO01_TELEFONO1") + ",  " + rsOra.getString("NO01_TELEFONO2"));
+                    String emailPersonal = stringQuoted(rsOra.getString("NO01_CORREO1") + "; " + rsOra.getString("NO01_CORREO2"));
+                    
+                    String fechaNacimiento = makeDate(rsOra.getString("NO01_FECHA_NAC"));
+                    
+                    String idSexo = rsOra.getString("NO01_SEXO");
+                    idSexo = idSexo != null && idSexo.contains("M") ? "0" : "1";
+                    
+                    String idEdoCivil = rsOra.getString("NO01_EDO_CIVIL");
+                    if (idEdoCivil != null) {
+                        idEdoCivil = idEdoCivil.trim().toUpperCase();
+                        if (idEdoCivil.contains("SOLT")) {
+                            idEdoCivil = "0";
+                        } else if (idEdoCivil.contains("CASAD")) {
+                            idEdoCivil = "1";
+                        } else if (idEdoCivil.contains("DIVOR")) {
+                            idEdoCivil = "2";
+                        } else if (idEdoCivil.contains("VIUDO")) {
+                            idEdoCivil = "3";
+                        } else if (idEdoCivil.contains("UNION")) {
+                            idEdoCivil = "4";
+                        } else {
+                            idEdoCivil = null;
+                        } 
+                    } 
+                    
+                    String name = stringQuoted(apellidoPAt + " " + apellidoMat + " " + nombre);
+                    apellidoPAt = stringQuoted(apellidoPAt);
+                    apellidoMat = stringQuoted(apellidoMat);
+                    nombre = stringQuoted(nombre);
 
-                    cveEmp = "'" + cveEmp + "'";
-                    curp = "'" + curp + "'";
-                    rfc = "'" + rfc + "'";
-                    imss = "'" + imss + "'";
-                    cuentaBanco = "'" + cuentaBanco + "'";
-                    urlPhoto = "'" + urlPhoto + "'";
-                    name = "'" + name + "'";
-                    apellidoPAt = "'" + apellidoPAt + "'";
-                    apellidoMat = "'" + apellidoMat + "'";
-                    nombre = "'" + nombre + "'";
-                    //numCredito = "'" + numCredito + "'";
-                    cuentaCimav = "'" + cuentaCimav + "'";
-                    numSni = "'" + numSni + "'";
+//                    cveEmp = "'" + cveEmp + "'";
+//                    curp = "'" + curp + "'";
+//                    rfc = "'" + rfc + "'";
+//                    imss = "'" + imss + "'";
+//                    cuentaBanco = "'" + cuentaBanco + "'";
+//                    urlPhoto = "'" + urlPhoto + "'";
+//                    name = "'" + name + "'";
+//                    apellidoPAt = "'" + apellidoPAt + "'";
+//                    apellidoMat = "'" + apellidoMat + "'";
+//                    nombre = "'" + nombre + "'";
+//                    //numCredito = "'" + numCredito + "'";
+//                    cuentaCimav = "'" + cuentaCimav + "'";
+//                    numSni = "'" + numSni + "'";
 
                     String sqlMigrarEmpleado = "INSERT INTO empleados VALUES ( default, "
                             + cveEmp + ", " + consecutivo + ", " + idDepto + ", " + idStatus + ", " + curp + ", " + rfc + ", " + imss + ", " + idProyecto + ", " + cuentaBanco
                             + ", " + urlPhoto + ", " + name + ", " + apellidoPAt + ", " + apellidoMat + ", " + idGrupo + ", " + nombre + ", " + idTabulador + ", " + idClinica
                             + ", " + cuentaCimav + ", " + idBanco + ", " + idSede + ", " + idTipoEmpleado + ", " + idTipoContrato
                             + ", " + fechaIng + ", " + fechaIniContrato + ", " + fechaFinContrato + ", " + fechaBaja + ", " + idTipoAntiguedad + ", " + fechaAntiguedad
-                            + ", " + idTipoSni + ", " + numSni + ", " + fechaSNI
+                            + ", " + idTipoSni + ", " + numSni + ", " + fechaSNI 
+                            + ", NULL, " + fechaNacimiento + ", " + idSexo + ", " + idEdoCivil + ", " + dirCalle + ", " + dirColonia + ", " + dirCP + ", " + telefono + ", " + emailPersonal
                             + " );";
 
                     //System.out.println("" + sqlMigration);
+                    
+//                            + "NULL, 19671221, F, CASADO (A)     , 'C. 33 3411                              ', 'BARRIO DE LONDRES             ', '31060', '              ,                ', '08019                         ;                               ' );"
                     
                     stmtPostgress.execute(sqlMigrarEmpleado);
                 }
@@ -406,6 +447,14 @@ public class MigrarRHOracleToPostgres {
         } catch (SQLException ex) {
             Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static String stringQuoted(String str) {
+        if (str == null || str.trim().isEmpty()) {
+            return null;
+        } else {
+            return "'"  + str.trim() + "'";
+         }
     }
 
     private static void migrarJefes() {
