@@ -33,7 +33,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 1;
+        int opcion = 5;
 
         switch (opcion) {
             case 0:
@@ -49,6 +49,9 @@ public class MigrarRHOracleToPostgres {
                 break;
             case 4:
                 migrarDepartamentos();
+                break;
+            case 5:
+                migrarConceptos();
                 break;
             default:
                 System.out.println("Default");
@@ -516,4 +519,61 @@ public class MigrarRHOracleToPostgres {
         return result;
     }
 
+    private static void migrarConceptos() {
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver postgresDriver = new org.postgresql.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(postgresDriver);
+
+            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+
+            try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
+                
+                // Vaciar departamentos
+                String sql = "DELETE FROM Conceptos;"; 
+                stmtPostgres.executeUpdate(sql);
+                
+                // reiniciar seq
+                sql = "ALTER SEQUENCE conceptos_id_seq RESTART WITH 1;";
+                stmtPostgres.executeUpdate(sql);
+                
+                // sacar lista ordenada de Conceptos (Percepciones y Deducciones) capturables
+                String sqlConceptos = "select c.* from no04 c where c.no04_tmovto in ('P','D') order by c.no04_conce";
+                try (ResultSet rsOra = stmtOra.executeQuery(sqlConceptos)) {
+                    while (rsOra.next()) {
+                        String code = rsOra.getString("NO04_CONCE").trim();
+                        String nombre = rsOra.getString("NO04_nombre");
+                        String tipoMvto = rsOra.getString("NO04_tmovto").trim();
+                        
+                        code = Strings.padStart(code, 5, '0');
+                        code = stringQuoted(code);
+                        nombre = stringQuoted(nombre);
+                        tipoMvto = stringQuoted(tipoMvto);
+                        
+                        
+                        // insertar el registro en Conceptos
+                        
+                        // Si el Depto es vacio, se lanza un Trigger
+                        // Si el Depto No es vacio, se inserta directo.
+                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoMvto + ", 0);";
+                        
+                        stmtPostgres.executeUpdate(sql);
+                    }
+                }
+                
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connPostgres.close();
+                connOracle.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }

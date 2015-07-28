@@ -1,30 +1,29 @@
-DECLARE
-  match_count INTEGER;
--- Type the owner of the tables you are looking at
-  v_owner VARCHAR2(255) :='ALMACEN';
-
--- Type the data type you are look at (in CAPITAL)
--- VARCHAR2, NUMBER, etc.
-  v_data_type VARCHAR2(255) :='CHAR';
-
--- Type the string you are looking at
-  v_search_string VARCHAR2(400) := '%CALDERON OCHOA%';
-
-BEGIN
-  
-  FOR t IN (SELECT table_name, column_name FROM all_tab_cols where owner=v_owner and data_type = v_data_type) LOOP
-
-    if (length(t.table_name) < 10) THEN
-      EXECUTE IMMEDIATE 
-      'SELECT COUNT(*) FROM '||t.table_name||' WHERE '||t.column_name||' like :1'
-      INTO match_count
-      USING v_search_string;
-
-      IF match_count > 0 THEN
-        dbms_output.put_line( t.table_name ||' '||t.column_name||' '||match_count );
-      END IF;
-    END IF;
-
-  END LOOP;
-END;
+--/
+DECLARE  
+        -- Funciona en DbVisualizer Pro 9.2.7   TIENE QUE SER PRO
+  ncount NUMBER;  
+  vwhere VARCHAR2(1000) := '';  
+  vselect VARCHAR2(1000) := ' select count(1) from ';  
+  vsearchstr VARCHAR2(1000) := '%CAPTURAR SUELDO MENSUAL%';  
+  vstmt VARCHAR2(1000) := '';  
+  vquery VARCHAR(1000) := '';
+BEGIN  
+  FOR k IN (SELECT a.table_name  
+                  ,a.column_name  
+              FROM user_tab_cols a  
+             WHERE a.table_name LIKE ('NO%') AND a.data_type LIKE '%CHAR%')  
+  LOOP  
+    vwhere := ' where ' || k.column_name || ' like :vsearchstr ';  
+    vstmt := vselect || k.table_name || vwhere  ;
+    --dbms_output.put_line(vstmt);
+    EXECUTE IMMEDIATE vstmt  
+      INTO ncount  
+      USING vsearchstr;  
+    IF (ncount > 0)  
+    THEN  
+        vquery := 'select ' || k.column_name || ' from ' || k.table_name || ' where ' || k.column_name || ' like ''' || vsearchstr || ''';';
+        dbms_output.put_line(vquery);  
+    END IF;  
+  END LOOP;  
+END;  
 /
