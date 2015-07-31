@@ -33,7 +33,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 5;
+        int opcion = 1;
 
         switch (opcion) {
             case 0:
@@ -207,8 +207,16 @@ public class MigrarRHOracleToPostgres {
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
                 
+                // VACIAR NominaQuincenal
+                String sql = "DELETE FROM NominaQuincenal;";
+                stmtPostgress.execute(sql);
+                
+                // reiniciar seq
+                sql = "ALTER SEQUENCE nominaquincenal_id_seq RESTART WITH 1;";
+                stmtPostgress.execute(sql);
+
                 // VACIAR Empleados
-                String sql = "DELETE FROM Empleados;";
+                sql = "DELETE FROM Empleados;";
                 stmtPostgress.execute(sql);
                 
                 // reiniciar seq
