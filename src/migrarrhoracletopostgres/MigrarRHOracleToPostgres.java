@@ -33,7 +33,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 1;
+        int opcion = 5;
 
         switch (opcion) {
             case 0:
@@ -540,8 +540,9 @@ public class MigrarRHOracleToPostgres {
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
                 
-                // Vaciar departamentos
-                String sql = "DELETE FROM Conceptos;"; 
+//                // Vaciar departamentos
+                String sql = ""; 
+                sql = "DELETE FROM Conceptos;"; 
                 stmtPostgres.executeUpdate(sql);
                 
                 // reiniciar seq
@@ -549,25 +550,27 @@ public class MigrarRHOracleToPostgres {
                 stmtPostgres.executeUpdate(sql);
                 
                 // sacar lista ordenada de Conceptos (Percepciones y Deducciones) capturables
-                String sqlConceptos = "select c.* from no04 c where c.no04_tmovto in ('P','D') order by c.no04_conce";
+                String sqlConceptos = "select c.* from no04 c where c.no04_tmovto in ('E', 'P', 'D') order by c.no04_conce";
+                //String sqlConceptos = "select c.* from no04 c order by c.no04_conce";
                 try (ResultSet rsOra = stmtOra.executeQuery(sqlConceptos)) {
                     while (rsOra.next()) {
                         String code = rsOra.getString("NO04_CONCE").trim();
                         String nombre = rsOra.getString("NO04_nombre");
                         String tipoMvto = rsOra.getString("NO04_tmovto").trim();
-                        String tipoCalculo = "F"; // Fijo por Default. No hay ninguna columna que me lo indique
+                        String tipoCalculo = "C"; // Calculo por Default. No hay ninguna columna que me lo indique
                         
                         code = Strings.padStart(code, 5, '0');
                         code = stringQuoted(code);
                         nombre = stringQuoted(nombre);
-                        tipoMvto = stringQuoted(tipoMvto);
+                        tipoMvto = tipoMvto.contains("E") ? "R" : tipoMvto;
+                        String tipoConcepto = stringQuoted(tipoMvto);
                         tipoCalculo = stringQuoted(tipoCalculo);                        
                         
                         // insertar el registro en Conceptos
                         
                         // Si el Depto es vacio, se lanza un Trigger
                         // Si el Depto No es vacio, se inserta directo.
-                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoMvto + ", 0, " + tipoCalculo + ");";
+                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", 0, " + tipoCalculo + ");";
                         
                         stmtPostgres.executeUpdate(sql);
                     }
