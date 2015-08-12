@@ -556,21 +556,20 @@ public class MigrarRHOracleToPostgres {
                     while (rsOra.next()) {
                         String code = rsOra.getString("NO04_CONCE").trim();
                         String nombre = rsOra.getString("NO04_nombre");
-                        String tipoMvto = rsOra.getString("NO04_tmovto").trim();
-                        String tipoCalculo = "C"; // Calculo por Default. No hay ninguna columna que me lo indique
+                        String tipoConcepto = rsOra.getString("NO04_tmovto").trim();
+                        String tipoMovimiento = stringQuoted("C");
                         
                         code = Strings.padStart(code, 5, '0');
                         code = stringQuoted(code);
                         nombre = stringQuoted(nombre);
-                        tipoMvto = tipoMvto.contains("E") ? "R" : tipoMvto;
-                        String tipoConcepto = stringQuoted(tipoMvto);
-                        tipoCalculo = stringQuoted(tipoCalculo);                        
+                        tipoConcepto = tipoConcepto.contains("E") ? "R" : tipoConcepto;
+                        tipoConcepto = stringQuoted(tipoConcepto);
                         
                         // insertar el registro en Conceptos
                         
                         // Si el Depto es vacio, se lanza un Trigger
                         // Si el Depto No es vacio, se inserta directo.
-                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", 0, " + tipoCalculo + ");";
+                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", 0, " + tipoMovimiento + ");";
                         
                         stmtPostgres.executeUpdate(sql);
                     }
