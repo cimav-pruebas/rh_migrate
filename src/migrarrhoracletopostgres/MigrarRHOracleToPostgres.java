@@ -33,7 +33,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 5;
+        int opcion = 1;
 
         switch (opcion) {
             case 0:
@@ -360,8 +360,18 @@ public class MigrarRHOracleToPostgres {
                     String cuentaCimav = rsOra.getString("NO01_EMAIL60");
                     cuentaCimav = cuentaCimav != null && !cuentaCimav.trim().isEmpty() ? cuentaCimav.split("@")[0] : "default";
 
-                    // Fecha de antiguedad es la de CALCULO; si no tiene, usar la de INGRESO
-                    String fechaAntiguedad = makeDate(rsOra.getString("NO01_FECHA_CAL"));
+                    /** FECHAS **/
+                    // NO01_FECHA_ING           fecha ingreso al Cimav
+                    // NO01_FECHA_CAL           la misma que NO01_FECHA_ING (no se usa)
+                    // NO01_FECHA_ING_FED       la usada para la PAnt. Para todo es la misma;
+                    //                          excepto para unos cuantos CYTs (Villafañe, Alarcon, etc.)
+                    // NO01_FECHA_DP            Creo que la ultima vez que se ingreso a un Centro 
+                    //                          Para la gran mayoria es NO01_FECHA_ING
+                    //                          Exception: Alarcon tiene ¿cuando se fue a Durango?
+                    //                          Villafañe desde que entró al Cimav
+                    // NO01_FECHA_APF           Creoq que como la de Pant, la 1era (NO01_FECHA_ING_FED)
+                    
+                    String fechaAntiguedad = makeDate(rsOra.getString("NO01_FECHA_ING_FED"));
                     fechaAntiguedad = fechaAntiguedad == null || fechaAntiguedad.trim().isEmpty() ? fechaIng : fechaAntiguedad;
 
                     int idStatus = 0;
