@@ -262,13 +262,13 @@ public class MigrarRHOracleToPostgres {
                     String tipoAnt = stringQuoted(rsOra.getString("NO01_TIPO_ANT"));
                     if (null != tipoAnt) {
                         switch (tipoAnt) {
-                            case "I": // Investigación
+                            case "'I'": // Investigación
                                 idTipoAntiguedad = 1;
                                 break;
-                            case "S": // Sin Antigüedad
+                            case "'S'": // Sin Antigüedad
                                 idTipoAntiguedad = 0;
                                 break;
-                            case "A": // Administrativa
+                            case "'A'": // Administrativa
                                 idTipoAntiguedad = 2;
                                 break;
                         }
@@ -277,16 +277,16 @@ public class MigrarRHOracleToPostgres {
                     String ubicacion = stringQuoted(rsOra.getString("NO01_UBICACION"));
                     if (null != ubicacion) {
                         switch (ubicacion) {
-                            case "1": // chi
+                            case "'1'": // chi
                                 idSede = 0;
                                 break;
-                            case "2": // Juárez (no hay)
+                            case "'2'": // Juárez (no hay)
                                 idSede = 3;
                                 break;
-                            case "3": // mty
+                            case "'3'": // mty
                                 idSede = 1;
                                 break;
-                            case "4": //dgo
+                            case "'4'": //dgo
                                 idSede = 2;
                                 break;
                         }
@@ -298,15 +298,15 @@ public class MigrarRHOracleToPostgres {
                     int idTipoContrato = rsOra.getInt("NO01_TIPO_CONTRATO");
                     int idTipoSni = 0;
                     String sni = stringQuoted(rsOra.getString("NO01_SNI"));
-                    if ("NO APLICA".equals(sni.trim())) {
+                    if ("NO APLICA".contains(sni.trim())) {
                         idTipoSni = 0;
-                    } else if ("CANDIDATO".equals(sni.trim())) {
+                    } else if ("CANDIDATO".contains(sni.trim())) {
                         idTipoSni = 1;
-                    } else if ("NIVEL I".equals(sni.trim())) {
+                    } else if ("'NIVEL I'".equals(sni.trim())) {
                         idTipoSni = 2;
-                    } else if ("NIVEL II".equals(sni.trim())) {
+                    } else if ("'NIVEL II'".equals(sni.trim())) {
                         idTipoSni = 3;
-                    } else if ("NIVEL III".equals(sni.trim())) {
+                    } else if ("'NIVEL III'".equals(sni.trim())) {
                         idTipoSni = 4;
                     }
                     String numSni = stringQuoted(rsOra.getString("NO01_NUM_SNI"));

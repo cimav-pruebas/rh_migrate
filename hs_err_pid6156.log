@@ -1,0 +1,883 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x000000005980cec6, pid=6156, tid=4032
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_76-b13) (build 1.7.0_76-b13)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.76-b04 mixed mode windows-amd64 compressed oops)
+# Problematic frame:
+# V  [jvm.dll+0x1ecec6]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000000000a8b2000):  VMThread [stack: 0x000000000b960000,0x000000000ba60000] [id=4032]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x000000000000000a
+
+Registers:
+RAX=0x0000000000000000, RBX=0x000000000ba5eda0, RCX=0x000000000ba5eda0, RDX=0x0000000000000028
+RSP=0x000000000ba5ead0, RBP=0x0000000000000019, RSI=0x0000000000000000, RDI=0x000000000ba5f420
+R8 =0x0000000000000000, R9 =0x0000000000000000, R10=0x000000077e179ed0, R11=0x0000000059ba4b78
+R12=0x00000000000003e8, R13=0x000000000a8b2001, R14=0x0000000000000000, R15=0x6666666666666667
+RIP=0x000000005980cec6, EFLAGS=0x0000000000010202
+
+Top of Stack: (sp=0x000000000ba5ead0)
+0x000000000ba5ead0:   000000077df45e10 000000077db83cc0
+0x000000000ba5eae0:   000000077e1320e0 000000077de62e30
+0x000000000ba5eaf0:   000000077dd51298 000000077dbe47d0
+0x000000000ba5eb00:   000000077dab8370 000000077e157788
+0x000000000ba5eb10:   000000000259f620 000000000259f620
+0x000000000ba5eb20:   000000077df93c58 000000077dd921e8
+0x000000000ba5eb30:   000000077dbf3388 000000077e09b798
+0x000000000ba5eb40:   000000077df81fe8 000000077da64380
+0x000000000ba5eb50:   000000077da49cc8 000000077db190f8
+0x000000000ba5eb60:   000000077db190f8 000000077dde1af0
+0x000000000ba5eb70:   000000077db0b0c8 000000077da27610
+0x000000000ba5eb80:   000000077df7da98 000000077e049b68
+0x000000000ba5eb90:   000000077df8a3c0 000000077e125138
+0x000000000ba5eba0:   000000077dad1b00 000000077de66e68
+0x000000000ba5ebb0:   000000077ddfa380 000000077e076120
+0x000000000ba5ebc0:   000000077dc634b0 000000077dbb4060 
+
+Instructions: (pc=0x000000005980cec6)
+0x000000005980cea6:   01 00 00 48 8b 05 70 be 54 00 48 33 c4 48 89 84
+0x000000005980ceb6:   24 30 01 00 00 4c 63 41 10 48 8b 41 08 48 8b d9
+0x000000005980cec6:   42 38 54 00 0a 74 33 44 0f be c2 48 8d 4c 24 20
+0x000000005980ced6:   48 8d 15 d3 d7 3a 00 e8 0e 0c e3 ff 48 8d 0d 67 
+
+
+Register to memory mapping:
+
+RAX=0x0000000000000000 is an unknown value
+RBX=0x000000000ba5eda0 is an unknown value
+RCX=0x000000000ba5eda0 is an unknown value
+RDX=0x0000000000000028 is an unknown value
+RSP=0x000000000ba5ead0 is an unknown value
+RBP=0x0000000000000019 is an unknown value
+RSI=0x0000000000000000 is an unknown value
+RDI=0x000000000ba5f420 is an unknown value
+R8 =0x0000000000000000 is an unknown value
+R9 =0x0000000000000000 is an unknown value
+R10=0x000000077e179ed0 is an oop
+{constant pool} 
+ - klass: {other class}
+ - holder: 0x000000077dc99620
+ - cache: 0x000000077e17b550
+ -   1 :  : klass_index=193 name_and_type_index=335
+ -   2 :  : klass_index=56 name_and_type_index=336
+ -   3 :  : klass_index=56 name_and_type_index=337
+ -   4 :  : klass_index=56 name_and_type_index=338
+ -   5 :  : klass_index=56 name_and_type_index=339
+ -   6 :  : klass_index=56 name_and_type_index=340
+ -   7 :  : klass_index=341 name_and_type_index=342
+ -   8 :  : "Default" {0xd6e087b0}
+ -   9 :  : klass_index=344 name_and_type_index=345
+ -  10 :  : 'oracle/jdbc/driver/OracleDriver' {0x7dcb7468}
+ -  11 :  : klass_index=10 name_and_type_index=335
+ -  12 :  : 'org/postgresql/Driver' {0x7dd50b30}
+ -  13 :  : klass_index=12 name_and_type_index=335
+ -  14 :  : klass_index=348 name_and_type_index=349
+ -  15 :  : klass_index=56 name_and_type_index=350
+ -  16 :  : "almacen" {0xd6677388}
+ -  17 :  : "afrika" {0xd66773c0}
+ -  18 :  : klass_index=348 name_and_type_index=353
+ -  19 :  : klass_index=56 name_and_type_index=354
+ -  20 :  : "rh_user" {0xd6b1f740}
+ -  21 :  : "rh_1ser" {0xd6b1f778}
+ -  22 :  : klass_index=357 name_and_type_index=358
+ -  23 :  : "DELETE FROM Tabulador;" {0xd6e087e8}
+ -  24 :  : klass_index=360 name_and_type_index=361
+ -  25 :  : "ALTER SEQUENCE tabulador_id_seq RESTART WITH 1;" {0xd6e08840}
+ -  26 :  : "select distinct e.NO01_CATEGORIA, t.* from NO01 e, NO22 t where e.NO01_CATEGORIA = t.NO22_CATEGORIA  order by e.NO01_CATEGORIA" {0xd6e088c8}
+ -  27 :  : klass_index=360 name_and_type_index=364
+ -  28 :  : klass_index=365 name_and_type_index=366
+ -  29 :  : "NO01_CATEGORIA" {0xd6d6c528}
+ -  30 :  : klass_index=365 name_and_type_index=368
+ -  31 :  : klass_index=369 name_and_type_index=370
+ -  32 :  : "NO22_nombre" {0xd6e089f0}
+ -  33 :  : "NO22_sueldo" {0xd6e08a30}
+ -  34 :  : "NO22_mat_didac" {0xd6e08a70}
+ -  35 :  : "NO22_comp_garan" {0xd6e08ab8}
+ -  36 :  : "NO22_honorarios" {0xd6e08b00}
+ -  37 :  : "NO22_carga_adm" {0xd6e08b48}
+ -  38 :  : 'java/lang/StringBuilder' {0x7da8edb8}
+ -  39 :  : klass_index=38 name_and_type_index=335
+ -  40 :  : "INSERT INTO Tabulador VALUES (DEFAULT, '" {0xd6e08b90}
+ -  41 :  : klass_index=38 name_and_type_index=379
+ -  42 :  : "', '" {0xd6e08c08}
+ -  43 :  : "', " {0xd6e08c38}
+ -  44 :  : ", " {0xd6e08c68}
+ -  45 :  : ");" {0xd6e08c98}
+ -  46 :  : klass_index=38 name_and_type_index=384
+ -  47 :  : klass_index=365 name_and_type_index=385
+ -  48 :  : klass_index=360 name_and_type_index=385
+ -  49 :  : 'java/lang/Throwable'
+ -  50 :  : klass_index=49 name_and_type_index=387
+ -  51 :  : klass_index=357 name_and_type_index=385
+ -  52 :  : 'java/lang/Exception'
+ -  53 :  : ">>> " {0xd6e08cc8}
+ -  54 :  : klass_index=52 name_and_type_index=390
+ -  55 :  : 'java/sql/SQLException'
+ -  56 :  : 'migrarrhoracletopostgres/MigrarRHOracleToPostgres' {0x7dc99620}
+ -  57 :  : klass_index=393 name_and_type_index=394
+ -  58 :  : klass_index=395 name_and_type_index=396
+ -  59 :  : klass_index=397 name_and_type_index=398
+ -  60 :  : klass_index=395 name_and_type_index=399
+ -  61 :  : "DELETE FROM Departamentos;" {0xd6e08cf8}
+ -  62 :  : "ALTER SEQUENCE departamentos_id_seq RESTART WITH 1;" {0xd6e08d58}
+ -  63 :  : "select distinct e.NO01_DEPTO, d.* from NO01 e, NO20 d where trim(e.NO01_DEPTO) = trim(d.NO20_DEPTO) order by e.NO01_DEPTO" {0xd6e08de8}
+ -  64 :  : "NO01_Depto" {0xd6e08f08}
+ -  65 :  : "NO20_nombre" {0xd6e08f48}
+ -  66 :  : klass_index=405 name_and_type_index=406
+ -  67 :  : "INSERT INTO Departamentos VALUES (default, '" {0xd6e08f88}
+ -  68 :  : "', 0 );" {0xd6e09008}
+ -  69 :  : "DELETE FROM Empleados;" {0xd6cacff8}
+ -  70 :  : klass_index=360 name_and_type_index=410
+ -  71 :  : "ALTER SEQUENCE empleados_id_seq RESTART WITH 1;" {0xd6cad498}
+ -  72 :  : "DELETE FROM NominaQuincenal;" {0xd6c9f3d0}
+ -  73 :  : "ALTER SEQUENCE nominaquincenal_id_seq RESTART WITH 1;" {0xd6cac9d0}
+ -  74 :  : "SELECT e.* FROM NO01 e where e.NO01_STATUS != 'B'" {0xd6cada38}
+ -  75 :  : "NO01_CVE_EMP" {0xd6d0a880}
+ -  76 :  : klass_index=416 name_and_type_index=417
+ -  77 :  : klass_index=56 name_and_type_index=418
+ -  78 :  : "NO01_NOM_EMP" {0xd6d0aae8}
+ -  79 :  : "NO01_depto" {0xd6d0ae08}
+ -  80 :  : "NO01_RFC_EMP" {0xd6d26010}
+ -  81 :  : "NO01_CVE_IMSS" {0xd6d26200}
+ -  82 :  : "NO01_CURP" {0xd6d263e8}
+ -  83 :  : "NO01_FECHA_ING" {0xd6d265b8}
+ -  84 :  : klass_index=56 name_and_type_index=425
+ -  85 :  : "NO01_NOM_BANCO" {0xd6d6c628}
+ -  86 :  : "BANORTE" {0xd6d6c828}
+ -  87 :  : klass_index=369 name_and_type_index=428
+ -  88 :  : "NO01_CTA_BANCO" {0xd6d6c860}
+ -  89 :  : "NO01_REGIMEN" {0xd6d6ca50}
+ -  90 :  : "AYA" {0xd6d6cbf0}
+ -  91 :  : "CYT" {0xd6d6cc20}
+ -  92 :  : "MMS" {0xd6e09040}
+ -  93 :  : "HON" {0xd6d6cc50}
+ -  94 :  : "NO01_TIPO_ANT" {0xd6d6cc80}
+ -  95 :  : klass_index=369 name_and_type_index=436
+ -  96 :  : "I" {0xd6437750}
+ -  97 :  : klass_index=369 name_and_type_index=437
+ -  98 :  : "S" {0xd666a4c8}
+ -  99 :  : "A" {0xd6e09070}
+ - 100 :  : "NO01_UBICACION" {0xd6d6cda0}
+ - 101 :  : "1" {0xd6666028}
+ - 102 :  : "2" {0xd6674330}
+ - 103 :  : "3" {0xd6b5e580}
+ - 104 :  : "4" {0xd6e090a0}
+ - 105 :  : "NO01_INI_CONTRATO" {0xd6e090d0}
+ - 106 :  : "NO01_FIN_CONTRATO" {0xd6e09120}
+ - 107 :  : "NO01_TIPO_CONTRATO" {0xd6e09170}
+ - 108 :  : klass_index=365 name_and_type_index=448
+ - 109 :  : "NO01_SNI" {0xd6e091c0}
+ - 110 :  : "NO APLICA" {0xd6e091f8}
+ - 111 :  : "CANDIDATO" {0xd6e09238}
+ - 112 :  : "NIVEL I" {0xd6e09278}
+ - 113 :  : "NIVEL II" {0xd6e092b0}
+ - 114 :  : "NIVEL III" {0xd6e092e8}
+ - 115 :  : "NO01_NUM_SNI" {0xd6e09328}
+ - 116 :  : "NO01_FECHA_SNI" {0xd6e09368}
+ - 117 :  : "NO01_APELLIDO_PAT" {0xd6e093b0}
+ - 118 :  : "NO01_APELLIDO_MAT" {0xd6e09400}
+ - 119 :  : "NO01_NOMBRE" {0xd6e09450}
+ - 120 :  : "NO01_PROYECTO" {0xd6e09490}
+ - 121 :  : "NO01_CLINICA" {0xd6e094d8}
+ - 122 :  : klass_index=462 name_and_type_index=463
+ - 123 :  : klass_index=416 name_and_type_index=464
+ - 124 :  : "" {0xd64066b0}
+ - 125 :  : "select * from departamentos d where d.code like '%" {0xd6e09518}
+ - 126 :  : "';" {0xd6e095a8}
+ - 127 :  : "id" {0xd643c740}
+ - 128 :  : "code" {0xd6e095d8}
+ - 129 :  : "name" {0xd640b7e8}
+ - 130 :  : "select * from tabulador d where d.code = '" {0xd6e09608}
+ - 131 :  : "NO01_EMAIL60" {0xd6e09688}
+ - 132 :  : klass_index=369 name_and_type_index=471
+ - 133 :  : "@" {0xd6634630}
+ - 134 :  : klass_index=369 name_and_type_index=473
+ - 135 :  : "default" {0xd6412e28}
+ - 136 :  : "NO01_FECHA_ING_FED" {0xd6e096c8}
+ - 137 :  : "http://www.cimav.edu.mx/foto/" {0xd6e09718}
+ - 138 :  : "NO01_FECHA_SAL" {0xd6e09780}
+ - 139 :  : "FECHA BAJA: " {0xd6e097c8}
+ - 140 :  : " >> " {0xd6e09808}
+ - 141 :  : "NO01_DIRECCION" {0xd6e09838}
+ - 142 :  : "NO01_COLONIA" {0xd6e09880}
+ - 143 :  : "NO01_CP" {0xd6e098c0}
+ - 144 :  : "NO01_TELEFONO1" {0xd6e098f8}
+ - 145 :  : ",  " {0xd6e09940}
+ - 146 :  : "NO01_TELEFONO2" {0xd6e09970}
+ - 147 :  : "NO01_FECHA_NAC" {0xd6e099b8}
+ - 148 :  : "NO01_SEXO" {0xd6e09a00}
+ - 149 :  : "M" {0xd666a468}
+ - 150 :  : "0" {0xd666a760}
+ - 151 :  : "NO01_EDO_CIVIL" {0xd6e09a40}
+ - 152 :  : klass_index=369 name_and_type_index=491
+ - 153 :  : "SOLT" {0xd6e09a88}
+ - 154 :  : "CASAD" {0xd6e09ab8}
+ - 155 :  : "DIVOR" {0xd6e09af0}
+ - 156 :  : "VIUDO" {0xd6e09b28}
+ - 157 :  : "UNION" {0xd6e09b60}
+ - 158 :  : " " {0xd66650c8}
+ - 159 :  : "INSERT INTO empleados VALUES ( default, " {0xd6e09b98}
+ - 160 :  : klass_index=38 name_and_type_index=499
+ - 161 :  : ", NULL, " {0xd6e09c10}
+ - 162 :  : " );" {0xd6e09c48}
+ - 163 :  : klass_index=56 name_and_type_index=502
+ - 164 :  : "'" {0xd6ab0b70}
+ - 165 :  : "SELECT e.NO01_CVE_EMP, e.NO01_JEFE FROM NO01 e where e.NO01_STATUS != 'B'" {0xd6e09c78}
+ - 166 :  : "NO01_JEFE" {0xd6e09d38}
+ - 167 :  : "select e.id from empleados e where e.code = '" {0xd6e09d78}
+ - 168 :  : "UPDATE empleados SET id_jefe = " {0xd6e09e00}
+ - 169 :  : " WHERE code = '" {0xd6e09e68}
+ - 170 :  : klass_index=369 name_and_type_index=509
+ - 171 :  : 'java/text/SimpleDateFormat' {0x7dd60390}
+ - 172 :  : "yyyyMMdd" {0xd6d6ba58}
+ - 173 :  : klass_index=171 name_and_type_index=512
+ - 174 :  : klass_index=171 name_and_type_index=513
+ - 175 :  : 'java/sql/Date' {0x7e0e9830}
+ - 176 :  : klass_index=515 name_and_type_index=516
+ - 177 :  : klass_index=175 name_and_type_index=517
+ - 178 :  : 'java/text/ParseException'
+ - 179 :  : klass_index=175 name_and_type_index=384
+ - 180 :  : "DELETE FROM Conceptos;" {0xd6e09eb0}
+ - 181 :  : "ALTER SEQUENCE conceptos_id_seq RESTART WITH 1;" {0xd6e09f08}
+ - 182 :  : "select c.* from no04 c where c.no04_tmovto in ('E', 'P', 'D') order by c.no04_conce" {0xd6e09f90}
+ - 183 :  : "NO04_CONCE" {0xd6e0a060}
+ - 184 :  : "NO04_nombre" {0xd6e0a0a0}
+ - 185 :  : "NO04_tmovto" {0xd6e0a0e0}
+ - 186 :  : "C" {0xd6e0a120}
+ - 187 :  : "E" {0xd666a7c0}
+ - 188 :  : "R" {0xd6e0a150}
+ - 189 :  : "INSERT INTO Conceptos VALUES (default, " {0xd6e0a180}
+ - 190 :  : ", 0, " {0xd6e0a1f8}
+ - 191 :  : "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx" {0xd649bc80}
+ - 192 :  : "jdbc:postgresql://10.0.4.40:5432/rh_development" {0xd649bd30}
+ - 193 :  : 'java/lang/Object'
+ - 194 :  : 'CIMAV_15_XDB'
+ - 195 :  : 'Ljava/lang/String;'
+ - 196 :  : 'RH_DEVELOPMENT'
+ - 197 :  : '<init>'
+ - 198 :  : '()V'
+ - 199 :  : 'Code'
+ - 200 :  : 'LineNumberTable'
+ - 201 :  : 'LocalVariableTable'
+ - 202 :  : 'this'
+ - 203 :  : 'Lmigrarrhoracletopostgres/MigrarRHOracleToPostgres;'
+ - 204 :  : 'main'
+ - 205 :  : '([Ljava/lang/String;)V'
+ - 206 :  : 'args'
+ - 207 :  : '[Ljava/lang/String;'
+ - 208 :  : 'opcion'
+ - 209 :  : 'I'
+ - 210 :  : 'StackMapTable'
+ - 211 :  : 'migrarTabulador'
+ - 212 :  : 'catego'
+ - 213 :  : 'nombre'
+ - 214 :  : 'sueldo'
+ - 215 :  : 'materiales'
+ - 216 :  : 'compensacion'
+ - 217 :  : 'honorarios'
+ - 218 :  : 'carga'
+ - 219 :  : 'sql'
+ - 220 :  : 'sqlCategoriasExistentes'
+ - 221 :  : 'rsOra'
+ - 222 :  : 'Ljava/sql/ResultSet;'
+ - 223 :  : 'x2'
+ - 224 :  : 'Ljava/lang/Throwable;'
+ - 225 :  : 'stmtPostgres'
+ - 226 :  : 'Ljava/sql/Statement;'
+ - 227 :  : 'stmtOra'
+ - 228 :  : 'e2'
+ - 229 :  : 'Ljava/lang/Exception;'
+ - 230 :  : 'oracleDriver'
+ - 231 :  : 'Ljava/sql/Driver;'
+ - 232 :  : 'postgresDriver'
+ - 233 :  : 'connOracle'
+ - 234 :  : 'Ljava/sql/Connection;'
+ - 235 :  : 'connPostgres'
+ - 236 :  : 'ex'
+ - 237 :  : 'Ljava/sql/SQLException;'
+ - 238 :  : 'java/sql/Driver'
+ - 239 :  : 'java/sql/Connection'
+ - 240 :  : 'java/sql/Statement'
+ - 241 :  : 'java/lang/Throwable'
+ - 242 :  : 'java/lang/String'
+ - 243 :  : 'java/sql/ResultSet'
+ - 244 :  : 'java/lang/Exception'
+ - 245 :  : 'java/sql/SQLException'
+ - 246 :  : 'migrarDepartamentos'
+ - 247 :  : 'depto'
+ - 248 :  : 'vaciarEmpleados'
+ - 249 :  : 'stmtPostres'
+ - 250 :  : 'migrarEmpleados'
+ - 251 :  : 'cveEmp'
+ - 252 :  : 'consecutivo'
+ - 253 :  : 'nomEmp'
+ - 254 :  : 'cveDepto'
+ - 255 :  : 'rfc'
+ - 256 :  : 'imss'
+ - 257 :  : 'curp'
+ - 258 :  : 'fechaIng'
+ - 259 :  : 'categoria'
+ - 260 :  : 'nomBanco'
+ - 261 :  : 'idBanco'
+ - 262 :  : 'cuentaBanco'
+ - 263 :  : 'regimen'
+ - 264 :  : 'idGrupo'
+ - 265 :  : 'idTipoAntiguedad'
+ - 266 :  : 'tipoAnt'
+ - 267 :  : 'idSede'
+ - 268 :  : 'ubicacion'
+ - 269 :  : 'fechaIniContrato'
+ - 270 :  : 'fechaFinContrato'
+ - 271 :  : 'idTipoContrato'
+ - 272 :  : 'idTipoSni'
+ - 273 :  : 'sni'
+ - 274 :  : 'numSni'
+ - 275 :  : 'fechaSNI'
+ - 276 :  : 'apellidoPAt'
+ - 277 :  : 'apellidoMat'
+ - 278 :  : 'proyecto'
+ - 279 :  : 'clinica'
+ - 280 :  : 'idClinica'
+ - 281 :  : 'idDepto'
+ - 282 :  : 'codigoDepto'
+ - 283 :  : 'nomDepto'
+ - 284 :  : 'rsPostgress'
+ - 285 :  : 'idTabulador'
+ - 286 :  : 'codeTabulador'
+ - 287 :  : 'nameTabulador'
+ - 288 :  : 'cuentaCimav'
+ - 289 :  : 'fechaAntiguedad'
+ - 290 :  : 'idStatus'
+ - 291 :  : 'idProyecto'
+ - 292 :  : 'urlPhoto'
+ - 293 :  : 'idTipoEmpleado'
+ - 294 :  : 'fechaBaja'
+ - 295 :  : 'dirCalle'
+ - 296 :  : 'dirColonia'
+ - 297 :  : 'dirCP'
+ - 298 :  : 'telefono'
+ - 299 :  : 'emailPersonal'
+ - 300 :  : 'fechaNacimiento'
+ - 301 :  : 'idSexo'
+ - 302 :  : 'idEdoCivil'
+ - 303 :  : 'name'
+ - 304 :  : 'sqlMigrarEmpleado'
+ - 305 :  : 'stmtPostgress'
+ - 306 :  : 'oraclePostgres'
+ - 307 :  : 'migrarJefes'
+ - 308 :  : 'Z'
+ - 309 :  : 'java/lang/String'
+ - 310 :  : 'stringQuoted'
+ - 311 :  : '(Ljava/lang/String;)Ljava/lang/String;'
+ - 312 :  : 'str'
+ - 313 :  : 'jefe'
+ - 314 :  : 'idJefe'
+ - 315 :  : 'rsPost'
+ - 316 :  : 'sqlUpdateJefe'
+ - 317 :  : 'makeDate'
+ - 318 :  : 'fecha'
+ - 319 :  : 'Ljava/util/Date;'
+ - 320 :  : 'Ljava/text/ParseException;'
+ - 321 :  : 'fechaOra'
+ - 322 :  : 'fechaSql'
+ - 323 :  : 'Ljava/sql/Date;'
+ - 324 :  : 'result'
+ - 325 :  : 'java/sql/Date'
+ - 326 :  : 'java/text/ParseException'
+ - 327 :  : 'migrarConceptos'
+ - 328 :  : 'code'
+ - 329 :  : 'tipoConcepto'
+ - 330 :  : 'tipoMovimiento'
+ - 331 :  : 'sqlConceptos'
+ - 332 :  : '<clinit>'
+ - 333 :  : 'SourceFile'
+ - 334 :  : 'MigrarRHOracleToPostgres.java'
+ - 335 :  : name_index=197 signature_index=198
+ - 336 :  : name_index=248 signature_index=198
+ - 337 :  : name_index=250 signature_index=198
+ - 338 :  : name_index=211 signature_index=198
+ - 339 :  : name_index=246 signature_index=198
+ - 340 :  : name_index=327 signature_index=198
+ - 341 :  : 'java/lang/System'
+ - 342 :  : name_index=539 signature_index=540
+ - 343 :  : 'Default'
+ - 344 :  : 'java/io/PrintStream'
+ - 345 :  : name_index=542 signature_index=543
+ - 346 :  : 'oracle/jdbc/driver/OracleDriver'
+ - 347 :  : 'org/postgresql/Driver'
+ - 348 :  : 'java/sql/DriverManager' {0x7dd25048}
+ - 349 :  : name_index=545 signature_index=546
+ - 350 :  : name_index=194 signature_index=195
+ - 351 :  : 'almacen'
+ - 352 :  : 'afrika'
+ - 353 :  : name_index=547 signature_index=548
+ - 354 :  : name_index=196 signature_index=195
+ - 355 :  : 'rh_user'
+ - 356 :  : 'rh_1ser'
+ - 357 :  : 'java/sql/Connection' {0x7dcbab48}
+ - 358 :  : name_index=549 signature_index=550
+ - 359 :  : 'DELETE FROM Tabulador;'
+ - 360 :  : 'java/sql/Statement' {0x7de2cc00}
+ - 361 :  : name_index=551 signature_index=552
+ - 362 :  : 'ALTER SEQUENCE tabulador_id_seq RESTART WITH 1;'
+ - 363 :  : 'select distinct e.NO01_CATEGORIA, t.* from NO01 e, NO22 t where e.NO01_CATEGORIA = t.NO22_CATEGORIA  order by e.NO01_CATEGORIA'
+ - 364 :  : name_index=553 signature_index=554
+ - 365 :  : 'java/sql/ResultSet' {0x7dff9398}
+ - 366 :  : name_index=555 signature_index=556
+ - 367 :  : 'NO01_CATEGORIA'
+ - 368 :  : name_index=557 signature_index=311
+ - 369 :  : 'java/lang/String' {0x7da0b010}
+ - 370 :  : name_index=558 signature_index=559
+ - 371 :  : 'NO22_nombre'
+ - 372 :  : 'NO22_sueldo'
+ - 373 :  : 'NO22_mat_didac'
+ - 374 :  : 'NO22_comp_garan'
+ - 375 :  : 'NO22_honorarios'
+ - 376 :  : 'NO22_carga_adm'
+ - 377 :  : 'java/lang/StringBuilder'
+ - 378 :  : 'INSERT INTO Tabulador VALUES (DEFAULT, ''
+ - 379 :  : name_index=560 signature_index=561
+ - 380 :  : '', ''
+ - 381 :  : '', '
+ - 382 :  : ', '
+ - 383 :  : ');'
+ - 384 :  : name_index=562 signature_index=559
+ - 385 :  : name_index=563 signature_index=198
+ - 386 :  : 'java/lang/Throwable'
+ - 387 :  : name_index=564 signature_index=565
+ - 388 :  : 'java/lang/Exception'
+ - 389 :  : '>>> '
+ - 390 :  : name_index=566 signature_index=559
+ - 391 :  : 'java/sql/SQLException'
+ - 392 :  : 'migrarrhoracletopostgres/MigrarRHOracleToPostgres'
+ - 393 :  : 'java/lang/Class'
+ - 394 :  : name_index=568 signature_index=559
+ - 395 :  : 'java/util/logging/Logger'
+ - 396 :  : name_index=570 signature_index=571
+ - 397 :  : 'java/util/logging/Level'
+ - 398 :  : name_index=573 signature_index=574
+ - 399 :  : name_index=575 signature_index=576
+ - 400 :  : 'DELETE FROM Departamentos;'
+ - 401 :  : 'ALTER SEQUENCE departamentos_id_seq RESTART WITH 1;'
+ - 402 :  : 'select distinct e.NO01_DEPTO, d.* from NO01 e, NO20 d where trim(e.NO01_DEPTO) = trim(d.NO20_DEPTO) order by e.NO01_DEPTO'
+ - 403 :  : 'NO01_Depto'
+ - 404 :  : 'NO20_nombre'
+ - 405 :  : 'com/google/common/base/Strings' {0x7e131a28}
+ - 406 :  : name_index=578 signature_index=579
+ - 407 :  : 'INSERT INTO Departamentos VALUES (default, ''
+ - 408 :  : '', 0 );'
+ - 409 :  : 'DELETE FROM Empleados;'
+ - 410 :  : name_index=580 signature_index=581
+ - 411 :  : 'ALTER SEQUENCE empleados_id_seq RESTART WITH 1;'
+ - 412 :  : 'DELETE FROM NominaQuincenal;'
+ - 413 :  : 'ALTER SEQUENCE nominaquincenal_id_seq RESTART WITH 1;'
+ - 414 :  : 'SELECT e.* FROM NO01 e where e.NO01_STATUS != 'B''
+ - 415 :  : 'NO01_CVE_EMP'
+ - 416 :  : 'java/lang/Integer' {0x7daa6ee8}
+ - 417 :  : name_index=583 signature_index=552
+ - 418 :  : name_index=310 signature_index=311
+ - 419 :  : 'NO01_NOM_EMP'
+ - 420 :  : 'NO01_depto'
+ - 421 :  : 'NO01_RFC_EMP'
+ - 422 :  : 'NO01_CVE_IMSS'
+ - 423 :  : 'NO01_CURP'
+ - 424 :  : 'NO01_FECHA_ING'
+ - 425 :  : name_index=317 signature_index=311
+ - 426 :  : 'NO01_NOM_BANCO'
+ - 427 :  : 'BANORTE'
+ - 428 :  : name_index=584 signature_index=585
+ - 429 :  : 'NO01_CTA_BANCO'
+ - 430 :  : 'NO01_REGIMEN'
+ - 431 :  : 'AYA'
+ - 432 :  : 'CYT'
+ - 433 :  : 'MMS'
+ - 434 :  : 'HON'
+ - 435 :  : 'NO01_TIPO_ANT'
+ - 436 :  : name_index=586 signature_index=587
+ - 437 :  : name_index=588 signature_index=589
+ - 438 :  : 'S'
+ - 439 :  : 'A'
+ - 440 :  : 'NO01_UBICACION'
+ - 441 :  : '1'
+ - 442 :  : '2'
+ - 443 :  : '3'
+ - 444 :  : '4'
+ - 445 :  : 'NO01_INI_CONTRATO'
+ - 446 :  : 'NO01_FIN_CONTRATO'
+ - 447 :  : 'NO01_TIPO_CONTRATO'
+ - 448 :  : name_index=590 signature_index=552
+ - 449 :  : 'NO01_SNI'
+ - 450 :  : 'NO APLICA'
+ - 451 :  : 'CANDIDATO'
+ - 452 :  : 'NIVEL I'
+ - 453 :  : 'NIVEL II'
+ - 454 :  : 'NIVEL III'
+ - 455 :  : 'NO01_NUM_SNI'
+ - 456 :  : 'NO01_FECHA_SNI'
+ - 457 :  : 'NO01_APELLIDO_PAT'
+ - 458 :  : 'NO01_APELLIDO_MAT'
+ - 459 :  : 'NO01_NOMBRE'
+ - 460 :  : 'NO01_PROYECTO'
+ - 461 :  : 'NO01_CLINICA'
+ - 462 :  : 'migrarrhoracletopostgres/EClinica'
+ - 463 :  : name_index=592 signature_index=593
+ - 464 :  : name_index=594 signature_index=587
+ - 465 :  : ''
+ - 466 :  : 'select * from departamentos d where d.code like '%'
+ - 467 :  : '';'
+ - 468 :  : 'id'
+ - 469 :  : 'select * from tabulador d where d.code = ''
+ - 470 :  : 'NO01_EMAIL60'
+ - 471 :  : name_index=595 signature_index=556
+ - 472 :  : '@'
+ - 473 :  : name_index=596 signature_index=597
+ - 474 :  : 'default'
+ - 475 :  : 'NO01_FECHA_ING_FED'
+ - 476 :  : 'http://www.cimav.edu.mx/foto/'
+ - 477 :  : 'NO01_FECHA_SAL'
+ - 478 :  : 'FECHA BAJA: '
+ - 479 :  : ' >> '
+ - 480 :  : 'NO01_DIRECCION'
+ - 481 :  : 'NO01_COLONIA'
+ - 482 :  : 'NO01_CP'
+ - 483 :  : 'NO01_TELEFONO1'
+ - 484 :  : ',  '
+ - 485 :  : 'NO01_TELEFONO2'
+ - 486 :  : 'NO01_FECHA_NAC'
+ - 487 :  : 'NO01_SEXO'
+ - 488 :  : 'M'
+ - 489 :  : '0'
+ - 490 :  : 'NO01_EDO_CIVIL'
+ - 491 :  : name_index=598 signature_index=559
+ - 492 :  : 'SOLT'
+ - 493 :  : 'CASAD'
+ - 494 :  : 'DIVOR'
+ - 495 :  : 'VIUDO'
+ - 496 :  : 'UNION'
+ - 497 :  : ' '
+ - 498 :  : 'INSERT INTO empleados VALUES ( default, '
+ - 499 :  : name_index=560 signature_index=599
+ - 500 :  : ', NULL, '
+ - 501 :  : ' );'
+ - 502 :  : name_index=307 signature_index=198
+ - 503 :  : '''
+ - 504 :  : 'SELECT e.NO01_CVE_EMP, e.NO01_JEFE FROM NO01 e where e.NO01_STATUS != 'B''
+ - 505 :  : 'NO01_JEFE'
+ - 506 :  : 'select e.id from empleados e where e.code = ''
+ - 507 :  : 'UPDATE empleados SET id_jefe = '
+ - 508 :  : ' WHERE code = ''
+ - 509 :  : name_index=600 signature_index=587
+ - 510 :  : 'java/text/SimpleDateFormat'
+ - 511 :  : 'yyyyMMdd'
+ - 512 :  : name_index=197 signature_index=543
+ - 513 :  : name_index=601 signature_index=602
+ - 514 :  : 'java/sql/Date'
+ - 515 :  : 'java/util/Date' {0x7dcc1bb8}
+ - 516 :  : name_index=604 signature_index=605
+ - 517 :  : name_index=197 signature_index=606
+ - 518 :  : 'java/text/ParseException'
+ - 519 :  : 'DELETE FROM Conceptos;'
+ - 520 :  : 'ALTER SEQUENCE conceptos_id_seq RESTART WITH 1;'
+ - 521 :  : 'select c.* from no04 c where c.no04_tmovto in ('E', 'P', 'D') order by c.no04_conce'
+ - 522 :  : 'NO04_CONCE'
+ - 523 :  : 'NO04_nombre'
+ - 524 :  : 'NO04_tmovto'
+ - 525 :  : 'C'
+ - 526 :  : 'E'
+ - 527 :  : 'R'
+ - 528 :  : 'INSERT INTO Conceptos VALUES (default, '
+ - 529 :  : ', 0, '
+ - 530 :  : 'jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx'
+ - 531 :  : 'jdbc:postgresql://10.0.4.40:5432/rh_development'
+ - 532 :  : 'java/lang/Object'
+ - 533 :  : 'java/sql/Driver'
+ - 534 :  : 'java/sql/Connection'
+ - 535 :  : 'java/sql/Statement'
+ - 536 :  : 'java/lang/String'
+ - 537 :  : 'java/sql/ResultSet'
+ - 538 :  : 'java/lang/System'
+ - 539 :  : 'out'
+ - 540 :  : 'Ljava/io/PrintStream;'
+ - 541 :  : 'java/io/PrintStream'
+ - 542 :  : 'println'
+ - 543 :  : '(Ljava/lang/String;)V'
+ - 544 :  : 'java/sql/DriverManager'
+ - 545 :  : 'registerDriver'
+ - 546 :  : '(Ljava/sql/Driver;)V'
+ - 547 :  : 'getConnection'
+ - 548 :  : '(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/sql/Connection;'
+ - 549 :  : 'createStatement'
+ - 550 :  : '()Ljava/sql/Statement;'
+ - 551 :  : 'executeUpdate'
+ - 552 :  : '(Ljava/lang/String;)I'
+ - 553 :  : 'executeQuery'
+ - 554 :  : '(Ljava/lang/String;)Ljava/sql/ResultSet;'
+ - 555 :  : 'next'
+ - 556 :  : '()Z'
+ - 557 :  : 'getString'
+ - 558 :  : 'trim'
+ - 559 :  : '()Ljava/lang/String;'
+ - 560 :  : 'append'
+ - 561 :  : '(Ljava/lang/String;)Ljava/lang/StringBuilder;'
+ - 562 :  : 'toString'
+ - 563 :  : 'close'
+ - 564 :  : 'addSuppressed'
+ - 565 :  : '(Ljava/lang/Throwable;)V'
+ - 566 :  : 'getMessage'
+ - 567 :  : 'java/lang/Class'
+ - 568 :  : 'getName'
+ - 569 :  : 'java/util/logging/Logger'
+ - 570 :  : 'getLogger'
+ - 571 :  : '(Ljava/lang/String;)Ljava/util/logging/Logger;'
+ - 572 :  : 'java/util/logging/Level'
+ - 573 :  : 'SEVERE'
+ - 574 :  : 'Ljava/util/logging/Level;'
+ - 575 :  : 'log'
+ - 576 :  : '(Ljava/util/logging/Level;Ljava/lang/String;Ljava/lang/Throwable;)V'
+ - 577 :  : 'com/google/common/base/Strings'
+ - 578 :  : 'padStart'
+ - 579 :  : '(Ljava/lang/String;IC)Ljava/lang/String;'
+ - 580 :  : 'execute'
+ - 581 :  : '(Ljava/lang/String;)Z'
+ - 582 :  : 'java/lang/Integer'
+ - 583 :  : 'parseInt'
+ - 584 :  : 'contains'
+ - 585 :  : '(Ljava/lang/CharSequence;)Z'
+ - 586 :  : 'hashCode'
+ - 587 :  : '()I'
+ - 588 :  : 'equals'
+ - 589 :  : '(Ljava/lang/Object;)Z'
+ - 590 :  : 'getInt'
+ - 591 :  : 'migrarrhoracletopostgres/EClinica'
+ - 592 :  : 'getId'
+ - 593 :  : '(Ljava/lang/String;)Ljava/lang/Integer;'
+ - 594 :  : 'intValue'
+ - 595 :  : 'isEmpty'
+ - 596 :  : 'split'
+ - 597 :  : '(Ljava/lang/String;)[Ljava/lang/String;'
+ - 598 :  : 'toUpperCase'
+ - 599 :  : '(I)Ljava/lang/StringBuilder;'
+ - 600 :  : 'length'
+ - 601 :  : 'parse'
+ - 602 :  : '(Ljava/lang/String;)Ljava/util/Date;'
+ - 603 :  : 'java/util/Date'
+ - 604 :  : 'getTime'
+ - 605 :  : '()J'
+ - 606 :  : '(J)V'
+ - 607 :  : "'I'" {0xd6e0a230}
+ - 608 :  : "'S'" {0xd6e0a260}
+ - 609 :  : "'A'" {0xd6e0a290}
+ - 610 :  : "'1'" {0xd6e0a2c0}
+ - 611 :  : "'2'" {0xd6e0a2f0}
+ - 612 :  : "'3'" {0xd6e0a320}
+ - 613 :  : "'4'" {0xd6e0a350}
+ - 614 :  : "'NIVEL I'" {0xd6e0a380}
+ - 615 :  : "'NIVEL II'" {0xd6e0a3c0}
+ - 616 :  : "'NIVEL III'" {0xd6e0a400}
+ - 617 :  : "'" {0xd6ab0b70}
+ - 618 :  : "yyyyMMdd" {0xd6d6ba58}
+ - 619 :  : "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx" {0xd649bc80}
+ - 620 :  : "jdbc:postgresql://10.0.4.40:5432/rh_development" {0xd649bd30}
+ - 621 :  : ''I''
+ - 622 :  : ''S''
+ - 623 :  : ''A''
+ - 624 :  : ''1''
+ - 625 :  : ''2''
+ - 626 :  : ''3''
+ - 627 :  : ''4''
+ - 628 :  : ''NIVEL I''
+ - 629 :  : ''NIVEL II''
+ - 630 :  : ''NIVEL III''
+
+R11=0x0000000059ba4b78 is an unknown value
+R12=0x00000000000003e8 is an unknown value
+R13=0x000000000a8b2001 is an unknown value
+R14=0x0000000000000000 is an unknown value
+R15=0x6666666666666667 is an unknown value
+
+
+Stack: [0x000000000b960000,0x000000000ba60000],  sp=0x000000000ba5ead0,  free space=1018k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x1ecec6]
+
+VM_Operation (0x000000000bf5f130): GetOrSetLocal, mode: safepoint, requested by thread 0x000000000a906000
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x000000000a92b000 JavaThread "Service Thread" daemon [_thread_blocked, id=4424, stack(0x000000000c360000,0x000000000c460000)]
+  0x000000000a929000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=2500, stack(0x000000000c260000,0x000000000c360000)]
+  0x000000000a91d000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=2388, stack(0x000000000c160000,0x000000000c260000)]
+  0x000000000a90c000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, id=4176, stack(0x000000000c060000,0x000000000c160000)]
+  0x000000000a909000 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=5800, stack(0x000000000bf60000,0x000000000c060000)]
+  0x000000000a906000 JavaThread "JDWP Transport Listener: dt_shmem" daemon [_thread_blocked, id=4280, stack(0x000000000be60000,0x000000000bf60000)]
+  0x000000000a8f5000 JavaThread "Attach Listener" daemon [_thread_blocked, id=2312, stack(0x000000000bd60000,0x000000000be60000)]
+  0x000000000a8f2000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=5996, stack(0x000000000bc60000,0x000000000bd60000)]
+  0x000000000a8bf800 JavaThread "Finalizer" daemon [_thread_blocked, id=4956, stack(0x000000000bb60000,0x000000000bc60000)]
+  0x000000000a8b6000 JavaThread "Reference Handler" daemon [_thread_blocked, id=5028, stack(0x000000000ba60000,0x000000000bb60000)]
+  0x0000000000b5e000 JavaThread "main" [_thread_blocked, id=4500, stack(0x00000000024a0000,0x00000000025a0000)]
+
+Other Threads:
+=>0x000000000a8b2000 VMThread [stack: 0x000000000b960000,0x000000000ba60000] [id=4032]
+  0x000000000a936800 WatcherThread [stack: 0x000000000c460000,0x000000000c560000] [id=1472]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x0000000000b5cba0] Threads_lock - owner thread: 0x000000000a8b2000
+
+Heap
+ PSYoungGen      total 37888K, used 10281K [0x00000007d6400000, 0x00000007d8e00000, 0x0000000800000000)
+  eden space 32768K, 31% used [0x00000007d6400000,0x00000007d6e0a440,0x00000007d8400000)
+  from space 5120K, 0% used [0x00000007d8900000,0x00000007d8900000,0x00000007d8e00000)
+  to   space 5120K, 0% used [0x00000007d8400000,0x00000007d8400000,0x00000007d8900000)
+ ParOldGen       total 85504K, used 0K [0x0000000782c00000, 0x0000000787f80000, 0x00000007d6400000)
+  object space 85504K, 0% used [0x0000000782c00000,0x0000000782c00000,0x0000000787f80000)
+ PSPermGen       total 21504K, used 7667K [0x000000077da00000, 0x000000077ef00000, 0x0000000782c00000)
+  object space 21504K, 35% used [0x000000077da00000,0x000000077e17ce18,0x000000077ef00000)
+
+Card table byte_map: [0x0000000005760000,0x0000000005b80000] byte_map_base: 0x0000000001b73000
+
+Polling page: 0x0000000000b60000
+
+Code Cache  [0x0000000002760000, 0x00000000029d0000, 0x0000000005760000)
+ total_blobs=291 nmethods=32 adapters=220 free_code_cache=48650Kb largest_free_block=49792960
+
+Compilation events (10 events):
+Event: 0.563 Thread 0x000000000a929000 nmethod 28 0x00000000027d9e90 code [0x00000000027d9fe0, 0x00000000027da0b8]
+Event: 0.563 Thread 0x000000000a929000   29             java.lang.CharacterDataLatin1::getProperties (11 bytes)
+Event: 0.563 Thread 0x000000000a929000 nmethod 29 0x00000000027d4890 code [0x00000000027d49c0, 0x00000000027d4a58]
+Event: 0.574 Thread 0x000000000a91d000 nmethod 27 0x00000000027d80d0 code [0x00000000027d8300, 0x00000000027d91c0]
+Event: 211.702 Thread 0x000000000a929000   30             oracle.security.o3logon.C1::r (326 bytes)
+Event: 211.718 Thread 0x000000000a929000 nmethod 30 0x00000000027e0850 code [0x00000000027e09e0, 0x00000000027e1748]
+Event: 211.753 Thread 0x000000000a91d000   31   !         oracle.net.ns.NetInputStream::read (72 bytes)
+Event: 211.753 Thread 0x000000000a929000   32             oracle.net.ns.DataPacket::getDataFromBuffer (127 bytes)
+Event: 211.757 Thread 0x000000000a929000 nmethod 32 0x00000000027de890 code [0x00000000027de9e0, 0x00000000027dec98]
+Event: 211.759 Thread 0x000000000a91d000 nmethod 31 0x00000000027d5ed0 code [0x00000000027d6040, 0x00000000027d64e8]
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (2 events):
+Event: 0.263 Thread 0x0000000000b5e000 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00000000027cb2d0 method=java.util.jar.Attributes.putValue(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; @ 13
+Event: 0.576 Thread 0x0000000000b5e000 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00000000027d3738 method=java.lang.String.equals(Ljava/lang/Object;)Z @ 8
+
+Internal exceptions (10 events):
+Event: 0.498 Thread 0x0000000000b5e000 Threw 0x00000007d6c9d0d0 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.500 Thread 0x0000000000b5e000 Threw 0x00000007d6c9fc88 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.500 Thread 0x0000000000b5e000 Threw 0x00000007d6ca3570 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.501 Thread 0x0000000000b5e000 Threw 0x00000007d6ca6768 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.503 Thread 0x0000000000b5e000 Threw 0x00000007d6caa538 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.562 Thread 0x0000000000b5e000 Threw 0x00000007d6d0b300 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.563 Thread 0x0000000000b5e000 Threw 0x00000007d6d20f08 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.564 Thread 0x0000000000b5e000 Threw 0x00000007d6d269b8 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.566 Thread 0x0000000000b5e000 Threw 0x00000007d6d28f98 at C:\re\jdk7u76\1941\hotspot\src\share\vm\prims\jvm.cpp:1304
+Event: 0.576 Thread 0x0000000000b5e000 Implicit null exception at 0x00000000027d3495 to 0x00000000027d3729
+
+Events (10 events):
+Event: 180.424 Executing VM operation: ChangeSingleStep done
+Event: 180.424 Executing VM operation: ChangeSingleStep
+Event: 180.424 Executing VM operation: ChangeSingleStep done
+Event: 196.450 Executing VM operation: ChangeBreakpoints
+Event: 196.450 Executing VM operation: ChangeBreakpoints done
+Event: 198.765 Executing VM operation: ChangeBreakpoints
+Event: 198.766 Executing VM operation: ChangeBreakpoints done
+Event: 202.315 Executing VM operation: ChangeBreakpoints
+Event: 202.315 Executing VM operation: ChangeBreakpoints done
+Event: 214.237 Executing VM operation: GetOrSetLocal
+
+
+Dynamic libraries:
+0x00007ff6abf80000 - 0x00007ff6abfb3000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\java.exe
+0x00007ffa047a0000 - 0x00007ffa0494c000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ffa03d10000 - 0x00007ffa03e4e000 	C:\WINDOWS\system32\KERNEL32.DLL
+0x00007ffa019d0000 - 0x00007ffa01ae5000 	C:\WINDOWS\system32\KERNELBASE.dll
+0x00007ff9ff6b0000 - 0x00007ff9ff73e000 	C:\WINDOWS\system32\apphelp.dll
+0x00007ff9f4ed0000 - 0x00007ff9f4f23000 	C:\WINDOWS\AppPatch\AppPatch64\AcGenral.DLL
+0x00007ffa04480000 - 0x00007ffa0452a000 	C:\WINDOWS\system32\msvcrt.dll
+0x00007ffa017a0000 - 0x00007ffa017ce000 	C:\WINDOWS\SYSTEM32\SspiCli.dll
+0x00007ffa03cb0000 - 0x00007ffa03d04000 	C:\WINDOWS\system32\SHLWAPI.dll
+0x00007ffa01ec0000 - 0x00007ffa02037000 	C:\WINDOWS\system32\USER32.dll
+0x00007ffa022c0000 - 0x00007ffa02454000 	C:\WINDOWS\system32\ole32.dll
+0x00007ffa02640000 - 0x00007ffa03b59000 	C:\WINDOWS\system32\SHELL32.dll
+0x00007ffa00f00000 - 0x00007ffa00f21000 	C:\WINDOWS\SYSTEM32\USERENV.dll
+0x00007ffa02460000 - 0x00007ffa0250a000 	C:\WINDOWS\system32\ADVAPI32.dll
+0x00007ff9f4010000 - 0x00007ff9f402e000 	C:\WINDOWS\SYSTEM32\MPR.dll
+0x00007ffa04650000 - 0x00007ffa04791000 	C:\WINDOWS\system32\RPCRT4.dll
+0x00007ffa025e0000 - 0x00007ffa02639000 	C:\WINDOWS\SYSTEM32\sechost.dll
+0x00007ffa03f20000 - 0x00007ffa04131000 	C:\WINDOWS\SYSTEM32\combase.dll
+0x00007ffa03b60000 - 0x00007ffa03caf000 	C:\WINDOWS\system32\GDI32.dll
+0x00007ffa01900000 - 0x00007ffa01915000 	C:\WINDOWS\SYSTEM32\profapi.dll
+0x00007ff9ffa30000 - 0x00007ff9ffae2000 	C:\WINDOWS\SYSTEM32\SHCORE.dll
+0x00007ffa01e40000 - 0x00007ffa01e76000 	C:\WINDOWS\system32\IMM32.DLL
+0x00007ffa04320000 - 0x00007ffa04472000 	C:\WINDOWS\system32\MSCTF.dll
+0x00007ffa00a10000 - 0x00007ffa00c8a000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.9600.17810_none_6240b9c7ecbd0bda\COMCTL32.dll
+0x0000000059540000 - 0x0000000059612000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\msvcr100.dll
+0x0000000059620000 - 0x0000000059df5000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\server\jvm.dll
+0x00007ff9f8150000 - 0x00007ff9f8159000 	C:\WINDOWS\SYSTEM32\WSOCK32.dll
+0x00007ff9fcc90000 - 0x00007ff9fccb2000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ffa021f0000 - 0x00007ffa021f7000 	C:\WINDOWS\system32\PSAPI.DLL
+0x00007ffa02580000 - 0x00007ffa025da000 	C:\WINDOWS\system32\WS2_32.dll
+0x00007ff9fcc60000 - 0x00007ff9fcc8a000 	C:\WINDOWS\SYSTEM32\WINMMBASE.dll
+0x00007ffa01e80000 - 0x00007ffa01e89000 	C:\WINDOWS\system32\NSI.dll
+0x00007ffa01af0000 - 0x00007ffa01b3f000 	C:\WINDOWS\SYSTEM32\cfgmgr32.dll
+0x00007ffa00140000 - 0x00007ffa00168000 	C:\WINDOWS\SYSTEM32\DEVOBJ.dll
+0x00000000594f0000 - 0x00000000594ff000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\verify.dll
+0x00000000594c0000 - 0x00000000594e8000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\java.dll
+0x0000000059fa0000 - 0x0000000059fd5000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\jdwp.dll
+0x0000000059f90000 - 0x0000000059f98000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\npt.dll
+0x00000000594a0000 - 0x00000000594b5000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\zip.dll
+0x0000000059f70000 - 0x0000000059f7b000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\dt_shmem.dll
+0x0000000059480000 - 0x000000005949a000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\net.dll
+0x00007ffa01170000 - 0x00007ffa011c9000 	C:\WINDOWS\system32\mswsock.dll
+0x0000000059460000 - 0x0000000059471000 	C:\Program Files\Java\jdk1.7.0_76\jre\bin\nio.dll
+0x00007ff9f25c0000 - 0x00007ff9f25d5000 	C:\WINDOWS\system32\napinsp.dll
+0x00007ff9f25e0000 - 0x00007ff9f25fa000 	C:\WINDOWS\system32\pnrpnsp.dll
+0x00007ff9ff740000 - 0x00007ff9ff75b000 	C:\WINDOWS\system32\NLAapi.dll
+0x00007ffa00f70000 - 0x00007ffa01014000 	C:\WINDOWS\SYSTEM32\DNSAPI.dll
+0x00007ff9f5df0000 - 0x00007ff9f5dfd000 	C:\WINDOWS\System32\winrnr.dll
+0x00007ff9f2600000 - 0x00007ff9f2614000 	C:\WINDOWS\system32\wshbth.dll
+0x00007ff9f8120000 - 0x00007ff9f812a000 	C:\Windows\System32\rasadhlp.dll
+0x00007ff9fb220000 - 0x00007ff9fb24a000 	C:\WINDOWS\SYSTEM32\IPHLPAPI.DLL
+0x00007ff9fb1c0000 - 0x00007ff9fb1ca000 	C:\WINDOWS\SYSTEM32\WINNSI.DLL
+0x00007ff9fabf0000 - 0x00007ff9fac5b000 	C:\WINDOWS\System32\fwpuclnt.dll
+0x00007ff9f2ad0000 - 0x00007ff9f2c59000 	C:\WINDOWS\SYSTEM32\dbghelp.dll
+
+VM Arguments:
+jvm_args: -Xdebug -Xrunjdwp:transport=dt_shmem,address=javadebug -Dfile.encoding=UTF-8 
+java_command: migrarrhoracletopostgres.MigrarRHOracleToPostgres
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\ThinkPad\Bluetooth Software\;C:\Program Files\ThinkPad\Bluetooth Software\syswow64;;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x86;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x64;C:\ProgramData\Lenovo\ReadyApps;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\
+USERNAME=juan.calderon
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 8.1 , 64 bit Build 9600 
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 58 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, erms, ht, tsc, tscinvbit, tscinv
+
+Memory: 4k page, physical 8203100k(3787196k free), swap 9710428k(4252916k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (24.76-b04) for windows-amd64 JRE (1.7.0_76-b13), built on Dec 18 2014 16:31:25 by "java_re" with unknown MS VC++:1600
+
+time: Mon Sep 28 10:54:07 2015
+elapsed time: 214 seconds
+
