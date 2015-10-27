@@ -56,6 +56,7 @@ public class MigrarRHOracleToPostgres {
             default:
                 System.out.println("Default");
         }
+        System.out.println("Finish");
     }
     
     private static void migrarTabulador() {
