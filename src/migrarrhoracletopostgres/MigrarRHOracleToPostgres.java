@@ -33,7 +33,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 1;
+        int opcion = 6;
 
         switch (opcion) {
             case 0:
@@ -52,6 +52,9 @@ public class MigrarRHOracleToPostgres {
                 break;
             case 5:
                 migrarConceptos();
+                break;
+            case 6:
+                migrarTablasImpuestos();
                 break;
             default:
                 System.out.println("Default");
@@ -150,6 +153,58 @@ public class MigrarRHOracleToPostgres {
                         stmtPostgres.executeUpdate(sql);
                     }
                 }
+                
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connPostgres.close();
+                connOracle.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    private static void migrarTablasImpuestos() {
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver postgresDriver = new org.postgresql.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(postgresDriver);
+
+            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+
+            try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
+                
+                // Vaciar tabulador
+                String sql = "DELETE FROM TarifaAnual;"; 
+                stmtPostgres.executeUpdate(sql);
+                
+                // reiniciar seq
+                sql = "ALTER SEQUENCE tarifaanual_id_seq RESTART WITH 1;";
+                stmtPostgres.executeUpdate(sql);
+                
+                String sqlTabla = "select * from NO05s";
+                ResultSet rsOra = stmtOra.executeQuery(sqlTabla);
+                Double lim_inf = 0.01;
+                while (rsOra.next()) {
+                    Double lim_sup = rsOra.getDouble("NO05S_LS");
+                    if (lim_sup > 0.00) {
+                        Double cuota = rsOra.getDouble("NO05S_CUOTA");
+                        Double perc = rsOra.getDouble("NO05S_PERC");
+
+                        // insertar el registro en Tabulador
+                        sql = "INSERT INTO TarifaAnual VALUES (DEFAULT, " + lim_inf + ", " + lim_sup + ", " + cuota + ", " + perc  +");";
+                        stmtPostgres.executeUpdate(sql);
+
+                        lim_inf = Math.floor((lim_sup + 0.01) * 100) / 100;
+                    }
+                }
+                rsOra.close();
                 
             } catch (Exception e2) {
                 System.out.println(">>> " + e2.getMessage());
