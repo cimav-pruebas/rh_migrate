@@ -44,17 +44,21 @@ public class MigrarRHOracleToPostgres {
                 migrarEmpleados();
                 break;
             case 2:
+                migrarJefes();
                 break;
             case 3:
-                migrarTabulador();
+                migrarEstimulos();
                 break;
             case 4:
-                migrarDepartamentos();
+                migrarTabulador();
                 break;
             case 5:
-                migrarConceptos();
+                migrarDepartamentos();
                 break;
             case 6:
+                migrarConceptos();
+                break;
+            case 7:
                 migrarTablasImpuestos();
                 break;
             default:
@@ -537,10 +541,6 @@ public class MigrarRHOracleToPostgres {
                 connOracle.close();
             }
             
-            if (migrarJefes) {
-              migrarJefes();
-            }
-
         } catch (SQLException ex) {
             Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -583,6 +583,46 @@ public class MigrarRHOracleToPostgres {
                         idJefe = rsPost.getInt("id");
                     }
                     String sqlUpdateJefe = "UPDATE empleados SET id_jefe = " + idJefe + " WHERE code = '" + cveEmp + "';";
+
+                    System.out.println("" + sqlUpdateJefe);
+                    stmtPostgress.execute(sqlUpdateJefe);
+                }
+
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connOracle.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void migrarEstimulos() {
+
+        /* Genera los update para Insertar los Jefes en Empleados.
+            Para migrar jefes, Empleados ya debe tener a todos los Empleados */
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver oraclePostgres = new org.postgresql.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(oraclePostgres);
+
+            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+
+            try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
+                // 19 es la constante de los estimulos
+                String sql = "SELECT no02_cve_emp, no02_conce, no02_fijo FROM no02 where no02_conce = '19'";
+                ResultSet rsOra = stmtOra.executeQuery(sql);
+
+                while (rsOra.next()) {
+                    String cveEmp = rsOra.getString("no02_cve_emp").trim();
+                    String estimulos = rsOra.getString("no02_fijo").trim();
+
+                    String sqlUpdateJefe = "UPDATE empleados SET estimulos_productividad = " + estimulos + " WHERE code = '" + cveEmp + "';";
 
                     System.out.println("" + sqlUpdateJefe);
                     stmtPostgress.execute(sqlUpdateJefe);
@@ -661,6 +701,23 @@ public class MigrarRHOracleToPostgres {
                         
                         stmtPostgres.executeUpdate(sql);
                     }
+                    
+                    // Extras Conceptos
+                    // Internas
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'BG' , 'BASE GRAVABLE', 'I', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'BE' , 'BASE EXENTA', 'I', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDF' , 'SALARIO DIARIO FIJO', 'I', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDV' , 'SALARIO DIARIO VARIABLE', 'I', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDC' , 'SALARIO DIARIO COTIZADO', 'I', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDCT' , 'SALARIO DIARIO COTIZADO TOPADO', 'I', 'C', true);");
+                    // Repercuciones
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'E3SMG' , 'EXCEDENTE 3SMG', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'PED' , 'PRESTACIONES EN DINERO', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GMYP' , 'GTOS_MEDICOS YPENSION', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'IYV' , 'INVALIDEZ Y VIDA', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CYV' , 'CESANTIA Y VEJEZ', 'R', 'C', true);");
+                    
+                    
                 }
                 
             } catch (Exception e2) {
