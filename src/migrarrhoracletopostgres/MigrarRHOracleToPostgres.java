@@ -25,7 +25,8 @@ import java.util.logging.Logger;
 public class MigrarRHOracleToPostgres {
 
     public static String CIMAV_15_XDB = "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx";
-    public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
+    //public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
+    public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
 
     /**
      * @param args the command line arguments
@@ -33,7 +34,7 @@ public class MigrarRHOracleToPostgres {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 6;
+        int opcion = -1;
 
         switch (opcion) {
             case 0:
@@ -98,6 +99,9 @@ public class MigrarRHOracleToPostgres {
                     // insertar el registro en Tabulador
                     sql = "INSERT INTO Tabulador VALUES (DEFAULT, '" + catego + "', '" + nombre + "', " + sueldo + ", " 
                            + materiales + ", " + compensacion + ", " + honorarios + ", " + carga +");";
+                    
+                    System.out.println("" + sql);
+                    
                     stmtPostgres.executeUpdate(sql);
                 }
                 rsOra.close();
@@ -148,7 +152,9 @@ public class MigrarRHOracleToPostgres {
                         
                         // Si el Depto es vacio, se lanza un Trigger
                         // Si el Depto No es vacio, se inserta directo.
-                        sql = "INSERT INTO Departamentos VALUES (default, '" + depto + "', '" + nombre +"', 0 );";
+                        sql = "INSERT INTO Departamentos VALUES (default, '" + depto + "', '" + nombre +"');";
+                        
+                        System.out.println("" + sql);
                         
                         stmtPostgres.executeUpdate(sql);
                     }
@@ -493,6 +499,7 @@ public class MigrarRHOracleToPostgres {
 //                    cuentaCimav = "'" + cuentaCimav + "'";
 //                    numSni = "'" + numSni + "'";
 
+                    /*
                     String sqlMigrarEmpleado = "INSERT INTO empleados VALUES ( default, "
                             + cveEmp + ", " + consecutivo + ", " + idDepto + ", " + idStatus + ", " + curp + ", " + rfc + ", " + imss + ", " + idProyecto + ", " + cuentaBanco
                             + ", " + urlPhoto + ", " + name + ", " + apellidoPAt + ", " + apellidoMat + ", " + idGrupo + ", " + nombre + ", " + idTabulador + ", " + idClinica
@@ -501,8 +508,21 @@ public class MigrarRHOracleToPostgres {
                             + ", " + idTipoSni + ", " + numSni + ", " + fechaSNI 
                             + ", NULL, " + fechaNacimiento + ", " + idSexo + ", " + idEdoCivil + ", " + dirCalle + ", " + dirColonia + ", " + dirCP + ", " + telefono + ", " + emailPersonal
                             + " );";
+                    */
 
-                    //System.out.println("" + sqlMigration);
+                    String estimulos = "0.00";
+                    
+                    String sqlMigrarEmpleado = "INSERT INTO empleados VALUES ( default, "
+                            + idStatus + ", " + urlPhoto + ", " + cuentaCimav + ", " + idTabulador + ", " + idGrupo + ", " + idDepto + ", " + idSede + ", "
+                            + fechaAntiguedad + ", " + estimulos + ", " + idTipoAntiguedad + ", " + consecutivo + ", " + curp + ", " + rfc + ", " + imss + ", " 
+                            + idProyecto + ", " + cuentaBanco + ", " + apellidoPAt + ", " + apellidoMat + ", " + nombre + ", " + idClinica + ", " + idBanco + ", "
+                            + idTipoEmpleado + ", " + idTipoContrato + ", " + fechaIng + ", " + fechaIniContrato + ", " + fechaFinContrato + ", " + fechaBaja + ", "   
+                            + idTipoSni + ", " + numSni + ", " + fechaSNI + ", NULL, "  + fechaNacimiento + ", " + idSexo + ", " + idEdoCivil + ", " 
+                            + dirCalle + ", " + dirColonia + ", " + dirCP + ", " + telefono + ", " + emailPersonal + ","
+                            + name + ", " + cveEmp
+                        + " );";
+                            
+                    System.out.println("" + sqlMigrarEmpleado);
                     
 //                            + "NULL, 19671221, F, CASADO (A)     , 'C. 33 3411                              ', 'BARRIO DE LONDRES             ', '31060', '              ,                ', '08019                         ;                               ' );"
                     
@@ -564,7 +584,7 @@ public class MigrarRHOracleToPostgres {
                     }
                     String sqlUpdateJefe = "UPDATE empleados SET id_jefe = " + idJefe + " WHERE code = '" + cveEmp + "';";
 
-                    //System.out.println("" + sqlMigration);
+                    System.out.println("" + sqlUpdateJefe);
                     stmtPostgress.execute(sqlUpdateJefe);
                 }
 
@@ -635,7 +655,9 @@ public class MigrarRHOracleToPostgres {
                         
                         // Si el Depto es vacio, se lanza un Trigger
                         // Si el Depto No es vacio, se inserta directo.
-                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", 0, " + tipoMovimiento + ");";
+                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", " + tipoMovimiento + ", true);";
+                        
+                        System.out.println("" + sql);
                         
                         stmtPostgres.executeUpdate(sql);
                     }
