@@ -713,7 +713,7 @@ public class MigrarRHOracleToPostgres {
                     // Repercuciones
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'E3SMG' , 'EXCEDENTE 3SMG', 'R', 'C', true);");
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'PED' , 'PRESTACIONES EN DINERO', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GMYP' , 'GTOS_MEDICOS YPENSION', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GMYP' , 'GTOS MEDICOS Y PENSION', 'R', 'C', true);");
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'IYV' , 'INVALIDEZ Y VIDA', 'R', 'C', true);");
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CYV' , 'CESANTIA Y VEJEZ', 'R', 'C', true);");
                     
