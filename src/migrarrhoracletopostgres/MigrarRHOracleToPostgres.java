@@ -14,7 +14,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,8 +27,8 @@ import java.util.logging.Logger;
 public class MigrarRHOracleToPostgres {
 
     public static String CIMAV_15_XDB = "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx";
-    //public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
-    public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
+    public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
+    //public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
 
     /*
     
@@ -42,7 +44,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = -1;
+        int opcion = 9;
 
         switch (opcion) {
             case 0:
@@ -68,6 +70,13 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                 break;
             case 7:
                 migrarTablasImpuestos();
+                break;
+            case 8:
+                insertarMovimientosMasivos();
+                break;
+            case 9:
+                insertarMovimientosCruzRoja();
+                insertarMovimientosGtosMAyores();
                 break;
             default:
                 System.out.println("Default");
@@ -726,6 +735,11 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'IYV' , 'INVALIDEZ Y VIDA', 'R', 'C', true);");
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CYV' , 'CESANTIA Y VEJEZ', 'R', 'C', true);");
                     
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CFIJA' , 'CUOTA FIJA', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'RIESGOT' , 'RIESGO DE TRABAJO', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GYPS' , 'GUARDERIAS Y PRESTACIONES SOCIALES', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SEGRET' , 'SEGURO DE RETIRO', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'INFONA' , 'INFONAVIT', 'R', 'C', true);");
                     
                 }
                 
@@ -741,216 +755,249 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
         }
     }
     
+    private static void insertarMovimientosMasivos() {
+
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver oraclePostgres = new org.postgresql.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(oraclePostgres);
+
+            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+
+            try (Statement stmtPostgress = connPostgres.createStatement()) {
+
+                String codes = "("
+                        + "'00333', "
+                        + "'00344', "
+                        + "'00416', "
+                        + "'00265', "
+                        + "'00320', "
+                        + "'00063', "
+                        + "'00099', "
+                        + "'00434', "
+                        + "'00286', "
+                        + "'00298', "
+                        + "'00009', "
+                        + "'00312', "
+                        + "'00145', "
+                        + "'00306', "
+                        + "'00343', "
+                        + "'00149', "
+                        + "'00136', "
+                        + "'00147', "
+                        + "'00018', "
+                        + "'00266', "
+                        + "'00224', "
+                        + "'00350', "
+                        + "'00290', "
+                        + "'00039', "
+                        + "'00171', "
+                        + "'00202', "
+                        + "'00276', "
+                        + "'00410', "
+                        + "'00364', "
+                        + "'00373', "
+                        + "'00217', "
+                        + "'00430', "
+                        + "'00054', "
+                        + "'00422', "
+                        + "'00337', "
+                        + "'00315', "
+                        + "'00329', "
+                        + "'00058', "
+                        + "'00278', "
+                        + "'00335', "
+                        + "'00283', "
+                        + "'00150', "
+                        + "'00281', "
+                        + "'00128', "
+                        + "'00080', "
+                        + "'00419', "
+                        + "'00087', "
+                        + "'00176', "
+                        + "'00314', "
+                        + "'00334', "
+                        + "'00090', "
+                        + "'00094', "
+                        + "'00284', "
+                        + "'00183', "
+                        + "'00106', "
+                        + "'00156', "
+                        + "'00307', "
+                        + "'00277', "
+                        + "'00289', "
+                        + "'00170', "
+                        + "'00159', "
+                        + "'00322', "
+                        + "'00012', "
+                        + "'00304', "
+                        + "'00362', "
+                        + "'00388' "
+                        + ")";
+                String sql = "SELECT id FROM empleados WHERE code in " + codes;
+                ResultSet rs = stmtPostgress.executeQuery(sql);
+                List<String> ids = new ArrayList<>();
+                while (rs.next()) {
+                    ids.add(rs.getString("id").trim());
+                }
+                /*
+                for(String id : ids) {
+                    sql = "INSERT INTO movimientos VALUES (default, " + id + ", 115, 15.00, 1, 15.00, 15.00, true, 0.00); " + "\n"
+                          + "INSERT INTO movimientos VALUES (default, " + id + ", 91, 15.00, 1, 0.00, 0.00, true, 0.00);";
+                    stmtPostgress.execute(sql);
+                }
+                */
+
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connPostgres.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void insertarMovimientosCruzRoja() {
+
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver oraclePostgres = new org.postgresql.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(oraclePostgres);
+
+            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+
+            try (Statement stmtPostgress = connPostgres.createStatement()) {
+
+                String codes = "("
+                        + "'00185', "
+                        + "'00256', "
+                        + "'00265', "
+                        + "'00035', "
+                        + "'00036', "
+                        + "'00038', "
+                        + "'00043', "
+                        + "'00150', "
+                        + "'00279', "
+                        + "'00081', "
+                        + "'00084', "
+                        + "'00092', "
+                        + "'00090', "
+                        + "'00170', "
+                        + "'00004', "
+                        + "'00068' "
+                        + ")";
+                String sql = "SELECT id FROM empleados WHERE code in " + codes;
+                ResultSet rs = stmtPostgress.executeQuery(sql);
+                List<String> ids = new ArrayList<>();
+                while (rs.next()) {
+                    ids.add(rs.getString("id").trim());
+                }
+                for(String id : ids) {
+                    sql = "INSERT INTO movimientos VALUES (default, " + id + ", 108, 10.00, 1, 10.00, 10.00, true, 0.00); ";
+                    stmtPostgress.execute(sql);
+                }
+
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connPostgres.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void insertarMovimientosGtosMAyores() {
+
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver oraclePostgres = new org.postgresql.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(oraclePostgres);
+
+            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+
+            try (Statement stmtPostgress = connPostgres.createStatement()) {
+
+                String codes = "("
+                        + "'00063', "
+                        + "'00294', "
+                        + "'00348', "
+                        + "'00002', "
+                        + "'00306', "
+                        + "'00161', "
+                        + "'00300', "
+                        + "'00317', "
+                        + "'00147', "
+                        + "'00172', "
+                        + "'00219', "
+                        + "'00266', "
+                        + "'00224', "
+                        + "'00039', "
+                        + "'00375', "
+                        + "'00316', "
+                        + "'00204', "
+                        + "'00054', "
+                        + "'00337', "
+                        + "'00315', "
+                        + "'00329', "
+                        + "'00351', "
+                        + "'00283', "
+                        + "'00420', "
+                        + "'00150', "
+                        + "'00128', "
+                        + "'00211', "
+                        + "'00069', "
+                        + "'00081', "
+                        + "'00086', "
+                        + "'00428', "
+                        + "'00092', "
+                        + "'00142', "
+                        + "'00091', "
+                        + "'00089', "
+                        + "'00356', "
+                        + "'00094', "
+                        + "'00096', "
+                        + "'00284', "
+                        + "'00291', "
+                        + "'00103', "
+                        + "'00104', "
+                        + "'00165', "
+                        + "'00277', "
+                        + "'00411', "
+                        + "'00225', "
+                        + "'00159', "
+                        + "'00403', "
+                        + "'00304' "
+                        + ")";
+                String sql = "SELECT id FROM empleados WHERE code in " + codes;
+                ResultSet rs = stmtPostgress.executeQuery(sql);
+                List<String> ids = new ArrayList<>();
+                while (rs.next()) {
+                    ids.add(rs.getString("id").trim());
+                }
+                for(String id : ids) {
+                    sql = "INSERT INTO movimientos VALUES (default, " + id + ", 107, 100.00, 1, 100.00, 100.00, true, 0.00); ";
+                    stmtPostgress.execute(sql);
+                }
+
+            } catch (Exception e2) {
+                System.out.println(">>> " + e2.getMessage());
+            } finally {
+                connPostgres.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }
-
-
-/*
-
--- UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 999.91 FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
-
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00012';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00409';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00432';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00304';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00444';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00435';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00408';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00437';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00412';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00357';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00441';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00362';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00361';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00388';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	0	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00445';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	18.45	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00443';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	24.68	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00311';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	34.92	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00395';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	34.92	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00431';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	34.92	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00433';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	36.05	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00434';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	36.98	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00344';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	36.98	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00416';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	38.84	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00423';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	39.93	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00410';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	40.11	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00426';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	41.5	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00414';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	42.29	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00352';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	43.75	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00324';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	44.1	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00305';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	44.5	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00294';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	45.71	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00256';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	50.55	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00298';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	50.66	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00063';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	51.61	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00121';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	52.58	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00068';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	53.94	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00001';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	64.97	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00439';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	66.7	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00372';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	67.59	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00320';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	69.06	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00066';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	72.87	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00341';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	74.43	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00406';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	80.59	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00053';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	81.6	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00265';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	83.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00392';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	83.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00399';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	85.72	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00424';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	86.13	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00333';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	86.52	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00328';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	86.61	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00182';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	91.93	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00419';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	92.68	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00391';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	92.96	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00154';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	93.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00314';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	93.8	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00286';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	94.29	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00263';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	94.72	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00274';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	94.97	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00397';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	95.9	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00185';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	101.8	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00099';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	108.15	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00100';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	108.27	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00271';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	109.77	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00400';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	109.77	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00373';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	109.77	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00422';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	109.77	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00356';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	109.77	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00374';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	111.98	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00009';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	112.19	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00077';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	113.13	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00104';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	116.41	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00018';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	116.95	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00427';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	119.4	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00350';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	119.84	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00267';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	122.41	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00398';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	122.41	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00355';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	124.57	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00151';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	124.57	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00177';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	124.64	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00004';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	129.21	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00335';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	135.3	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00317';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	136.26	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00322';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	137.92	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00329';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	140.63	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00276';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	140.88	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00273';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	141.56	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00287';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	143.82	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00266';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	145.64	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00176';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	145.64	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00183';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	147.81	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00208';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	151.15	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00384';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	151.15	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00428';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	151.15	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00402';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	151.19	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00035';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	152.38	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00096';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	152.43	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00171';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	152.43	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00175';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	153.46	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00161';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	154.74	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00150';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	156.54	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00136';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	157.08	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00327';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	157.08	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00193';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	158.04	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00017';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	158.21	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00204';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	164.23	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00039';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	166.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00364';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	166.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00369';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	166.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00376';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	166.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00403';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	168.08	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00092';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	168.17	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00156';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	174.67	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00279';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	179.81	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00349';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	183.55	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00277';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	186.72	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00307';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	188.99	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00284';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	190.54	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00340';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	191.27	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00337';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	194.14	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00300';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	194.36	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00315';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	204.8	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00191';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	220.57	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00188';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	224.7	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00199';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	224.7	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00438';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	225.99	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00094';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	232.64	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00048';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	240.04	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00041';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	241.7	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00283';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	242.54	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00069';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	243.1	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00278';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	249.45	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00026';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	258.62	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00086';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	259.94	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00142';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	265.27	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00429';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	265.45	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00008';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	266.02	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00326';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	267.49	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00293';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	268.76	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00202';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	276.82	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00145';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	277.01	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00071';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	295.54	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00038';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	296.16	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00064';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	302.34	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00089';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	314.29	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00002';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	318.35	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00090';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	324.79	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00172';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	333.67	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00023';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	352.54	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00343';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	358.52	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00081';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	368.06	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00128';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	373.39	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00058';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	381.23	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00159';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	390.02	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00275';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	407.57	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00413';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	408.99	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00076';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	409.4	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00404';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	410.59	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00036';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	421.59	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00430';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	445.87	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00251';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	455.56	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00106';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	460.69	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00170';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	463.1	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00224';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	473.63	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00348';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	482.07	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00411';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	484.53	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00312';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	484.88	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00309';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	491.44	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00381';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	499.61	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00149';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	499.86	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00122';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	543.71	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00289';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	559.38	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00370';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	561.09	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00084';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	563.55	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00073';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	571.36	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00281';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	575.27	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00080';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	583.93	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00054';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	589.41	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00334';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	636.55	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00091';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	674.74	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00421';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	727.73	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00351';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	728.87	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00359';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	733.96	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00420';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	735.49	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00179';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	735.66	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00014';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	739.55	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00087';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	741.49	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00147';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	781.91	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00211';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	790.47	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00225';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	799.97	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00323';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	809.57	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00098';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	856.12	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00291';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	880.15	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00217';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	903.25	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00245';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	910.46	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00165';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	986.62	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00134';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	1018.15	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00316';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	1123.59	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00219';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	1186.06	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00103';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	1958.44	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00187';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	2082.71	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00290';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	2118.68	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00043';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	3115.41	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00375';
-UPDATE empleadoquincenal SET sdi_variable_bimestre_anterior = 	12745.62	FROM empleados  WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = 	'00306';				
-
-*/
