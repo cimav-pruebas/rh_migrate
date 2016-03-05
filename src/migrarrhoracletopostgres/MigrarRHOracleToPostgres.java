@@ -51,6 +51,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                 vaciarEmpleados();
                 break;
             case 1:
+                // TODO Checar fechas (el uso horario).
                 migrarEmpleados();
                 break;
             case 2:
@@ -740,7 +741,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GYPS' , 'GUARDERIAS Y PRESTACIONES SOCIALES', 'R', 'C', true);");
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SEGRET' , 'SEGURO DE RETIRO', 'R', 'C', true);");
                     stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'INFONA' , 'INFONAVIT', 'R', 'C', true);");
-                    
+                 
                 }
                 
             } catch (Exception e2) {
