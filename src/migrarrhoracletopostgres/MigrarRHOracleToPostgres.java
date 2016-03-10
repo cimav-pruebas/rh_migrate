@@ -44,7 +44,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 9;
+        int opcion = 6;
 
         switch (opcion) {
             case 0:
@@ -702,18 +702,48 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                         String nombre = rsOra.getString("NO04_nombre");
                         String tipoConcepto = rsOra.getString("NO04_tmovto").trim();
                         String tipoMovimiento = stringQuoted("C");
+                        Integer integra = rsOra.getInt("NO04_IMSS");
+                        Integer grava = rsOra.getInt("NO04_EXENTO");
+                        boolean suma = rsOra.getInt("NO04_IMPRIMIR") == 1;
                         
                         code = Strings.padStart(code, 5, '0');
                         code = stringQuoted(code);
                         nombre = stringQuoted(nombre);
                         tipoConcepto = tipoConcepto.contains("E") ? "R" : tipoConcepto;
                         tipoConcepto = stringQuoted(tipoConcepto);
+                        switch (grava) {
+                            case 0:
+                                grava = 0;
+                                break;
+                            case 9999:
+                                grava = 1;
+                                break;
+                            case 15:
+                            case 30:
+                                grava = 2;
+                                break;
+                            default:
+                                grava = 0;
+                                break;
+                        }
+                        
+                        // Grava
+                        // 0->Grava         0->Grava: FAG, TEG, Sueldo, Gratificacion
+                        // 1->Excenta       9999->Exenta: Ayuda guardería, FAE, TEE
+                        // 2->Parcial       15-> Prima vacacional
+                        //                  30-> Aguinaldo
+                        // Integra
+                        // 0->NoIntegra     0->NoIntegra, Mondero, Ayudas, Abonos, Apoyos
+                        // 1->Integra       SiIntegra, Sueldo, Aguinaldo, Carga, Primas,  
+                        // 2->Variado       Variado  Despensa, Dif. Tiempo Extra, Gratifi, Remanente, Monedero Anual
+                        
+                        // sacar uno por uno los que suman
                         
                         // insertar el registro en Conceptos
                         
                         // Si el Depto es vacio, se lanza un Trigger
                         // Si el Depto No es vacio, se inserta directo.
-                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", " + tipoMovimiento + ", true);";
+                        sql = "INSERT INTO Conceptos VALUES (default, " + code + ", " + nombre + ", " + tipoConcepto + ", " + tipoMovimiento + "," +  suma +", " + integra + "," + grava + ");";
                         
                         System.out.println("" + sql);
                         
@@ -722,26 +752,25 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                     
                     // Extras Conceptos
                     // Internas
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'BG' , 'BASE GRAVABLE', 'I', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'BE' , 'BASE EXENTA', 'I', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SUD' , 'SUELDO DIARIO', 'I', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDF' , 'SALARIO DIARIO FIJO', 'I', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDV' , 'SALARIO DIARIO VARIABLE', 'I', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDC' , 'SALARIO DIARIO COTIZADO', 'I', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDCT' , 'SALARIO DIARIO COTIZADO TOPADO', 'I', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'BG' , 'BASE GRAVABLE', 'I', 'C', true, 0, 0);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'BE' , 'BASE EXENTA', 'I', 'C', true, 0, 0);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SUD' , 'SUELDO DIARIO', 'I', 'C', true, 0, 0);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDF' , 'SALARIO DIARIO FIJO', 'I', 'C', true, 0, 0);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDV' , 'SALARIO DIARIO VARIABLE', 'I', 'C', true, 0, 0);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDC' , 'SALARIO DIARIO COTIZADO', 'I', 'C', true, 0, 0);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SDCT' , 'SALARIO DIARIO COTIZADO TOPADO', 'I', 'C', true, 0, 0);");
                     // Repercuciones
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'E3SMG' , 'EXCEDENTE 3SMG', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'PED' , 'PRESTACIONES EN DINERO', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GMYP' , 'GTOS MEDICOS Y PENSION', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'IYV' , 'INVALIDEZ Y VIDA', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CYV' , 'CESANTIA Y VEJEZ', 'R', 'C', true);");
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'E3SMG' , 'EXCEDENTE 3SMG', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'PED' , 'PRESTACIONES EN DINERO', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GMYP' , 'GTOS MEDICOS Y PENSION', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'IYV' , 'INVALIDEZ Y VIDA', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CYV' , 'CESANTIA Y VEJEZ', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CFIJA' , 'CUOTA FIJA', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'RIESGOT' , 'RIESGO DE TRABAJO', 'R', 'C', true, 0, 0);");  //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GYPS' , 'GUARDERIAS Y PRESTACIONES SOCIALES', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SEGRET' , 'SEGURO DE RETIRO', 'R', 'C', true, 0, 0);"); //
+                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'INFONA' , 'INFONAVIT', 'R', 'C', true, 0, 0);"); //
                     
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'CFIJA' , 'CUOTA FIJA', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'RIESGOT' , 'RIESGO DE TRABAJO', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'GYPS' , 'GUARDERIAS Y PRESTACIONES SOCIALES', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'SEGRET' , 'SEGURO DE RETIRO', 'R', 'C', true);");
-                    stmtPostgres.executeUpdate("INSERT INTO Conceptos VALUES (default, 'INFONA' , 'INFONAVIT', 'R', 'C', true);");
-                 
                 }
                 
             } catch (Exception e2) {
