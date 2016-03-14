@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class MigrarRHOracleToPostgres {
 
-    public static String CIMAV_15_XDB = "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx";
+    public static String NETMULTIX_CIMAV_15_XDB = "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx";
     public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
     //public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
 
@@ -93,7 +93,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(postgresDriver);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
@@ -148,7 +148,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(postgresDriver);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
@@ -203,7 +203,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(postgresDriver);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
@@ -286,7 +286,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(oraclePostgres);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
@@ -583,7 +583,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(oraclePostgres);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
@@ -628,7 +628,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(oraclePostgres);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
@@ -679,7 +679,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(postgresDriver);
 
-            Connection connOracle = DriverManager.getConnection(CIMAV_15_XDB, "almacen", "afrika");
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
             Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
