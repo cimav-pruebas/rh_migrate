@@ -31,6 +31,13 @@ public class MigrarRHOracleToPostgres {
     //public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
 
     /*
+    SELECT MAX(id)+1 FROM nomina;
+    CREATE SEQUENCE nomina_id_seq MINVALUE 446;
+    ALTER TABLE nomina ALTER id SET DEFAULT nextval('nomina_id_seq');
+    ALTER SEQUENCE nomina_id_seq OWNED BY nomina.id
+    */
+    
+    /*
     
     UPDATE empleadoquincenal 
 SET sdi_variable_bimestre_anterior = 999.91
