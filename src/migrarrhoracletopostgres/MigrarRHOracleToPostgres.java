@@ -27,7 +27,8 @@ import java.util.logging.Logger;
 public class MigrarRHOracleToPostgres {
 
     public static String NETMULTIX_CIMAV_15_XDB = "jdbc:oracle:thin:@//10.1.0.44:1521/cimavXDB.netmultix.cimav.edu.mx";
-    public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
+    //public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
+    public static String RH_PRODUCTION = "jdbc:postgresql://10.0.4.40:5432/rh_production";
     //public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
 
     /*
@@ -51,7 +52,8 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
     public static void main(String[] args) {
         // TODO code application logic here
 
-        int opcion = 6;
+        // 4,5,7,0,1,6,2,3
+        int opcion = 3;
 
         switch (opcion) {
             case 0:
@@ -101,7 +103,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(postgresDriver);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
                 
@@ -156,7 +158,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(postgresDriver);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
                 
@@ -211,7 +213,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(postgresDriver);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
                 
@@ -258,7 +260,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             Driver postgresDriver = new org.postgresql.Driver();
             DriverManager.registerDriver(postgresDriver);
 
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtPostres = connPostgres.createStatement();) {
                 String sql = "DELETE FROM Empleados;";
@@ -284,7 +286,9 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
     private static void migrarEmpleados() {
 
         boolean migrarJefes = true;
-        
+
+        int conta = 0;
+
         /* Generar todos registros de Empleados desde N001 */
         try {
             Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
@@ -294,16 +298,17 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oraclePostgres);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
                 
                 // VACIAR NominaQuincenal
-                String sql = "DELETE FROM NominaQuincenal;";
+                //String sql = "DELETE FROM NominaQuincenal;";
+                String sql = "DELETE FROM Nomina;";
                 stmtPostgress.execute(sql);
                 
                 // reiniciar seq
-                sql = "ALTER SEQUENCE nominaquincenal_id_seq RESTART WITH 1;";
+                sql = "ALTER SEQUENCE nomina_id_seq RESTART WITH 1;";
                 stmtPostgress.execute(sql);
 
                 // VACIAR Empleados
@@ -315,7 +320,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
                 stmtPostgress.execute(sql);
                 
                 // Leer empleados de NetMultix; excepto Bajas. NO01_FECHA_SAL es la fecha de baja.
-                sql = "SELECT e.* FROM NO01 e where e.NO01_STATUS != 'B'"; // AND e.NO01_CVE_EMP like '%0076%'";
+                sql = "SELECT e.* FROM NO01 e where e.NO01_STATUS != 'B' or (e.NO01_STATUS = 'B' and e.NO01_FECHA_SAL > '20160101')"; // AND e.NO01_CVE_EMP like '%0076%'";
                 ResultSet rsOra = stmtOra.executeQuery(sql);
 
                 while (rsOra.next()) {
@@ -556,6 +561,8 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
 //                            + "NULL, 19671221, F, CASADO (A)     , 'C. 33 3411                              ', 'BARRIO DE LONDRES             ', '31060', '              ,                ', '08019                         ;                               ' );"
                     
                     stmtPostgress.execute(sqlMigrarEmpleado);
+                    
+                    conta++;
                 }
                 
             } catch (Exception e2) {
@@ -564,6 +571,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             } finally {
                 connPostgres.close();
                 connOracle.close();
+                System.out.println("FISNHS>>> " + conta + " empleados");
             }
             
         } catch (SQLException ex) {
@@ -591,7 +599,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oraclePostgres);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
                 String sql = "SELECT e.NO01_CVE_EMP, e.NO01_JEFE FROM NO01 e where e.NO01_STATUS != 'B'";
@@ -636,7 +644,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oraclePostgres);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgress = connPostgres.createStatement()) {
                 // 19 es la constante de los estimulos
@@ -687,7 +695,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(postgresDriver);
 
             Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtOra = connOracle.createStatement(); Statement stmtPostgres = connPostgres.createStatement()) {
                 
@@ -801,7 +809,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(oraclePostgres);
 
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtPostgress = connPostgres.createStatement()) {
 
@@ -907,7 +915,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(oraclePostgres);
 
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtPostgress = connPostgres.createStatement()) {
 
@@ -960,7 +968,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             DriverManager.registerDriver(oracleDriver);
             DriverManager.registerDriver(oraclePostgres);
 
-            Connection connPostgres = DriverManager.getConnection(RH_DEVELOPMENT, "rh_user", "rh_1ser");
+            Connection connPostgres = DriverManager.getConnection(RH_PRODUCTION, "rh_user", "rh_1ser");
 
             try (Statement stmtPostgress = connPostgres.createStatement()) {
 
