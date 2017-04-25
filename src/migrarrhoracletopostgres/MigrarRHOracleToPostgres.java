@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +31,9 @@ public class MigrarRHOracleToPostgres {
     //public static String RH_DEVELOPMENT = "jdbc:postgresql://10.0.4.40:5432/rh_development";
     public static String RH_PRODUCTION = "jdbc:postgresql://10.0.4.40:5432/rh_production";
     //public static String RH_DEVELOPMENT = "jdbc:postgresql://localhost:5432/rh_development";
+    
+    public static String VISITANTES_PRODUCTION    = "jdbc:mysql://10.0.0.13:3306/visitantes";
+    //public static String VISITANTES_DEVELOPMENT = "jdbc:mysql://localhost:3306/visitantes_development";
 
     /*
     SELECT MAX(id)+1 FROM nomina;
@@ -53,7 +57,7 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
         // TODO code application logic here
 
         // 4,5,7,0,1,6,2,3
-        int opcion = 3;
+        int opcion = 30;
 
         switch (opcion) {
             case 0:
@@ -87,6 +91,9 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
             case 9:
                 insertarMovimientosCruzRoja();
                 insertarMovimientosGtosMAyores();
+                break;
+            case 30:
+                migrarEmpleadosToJustificador();
                 break;
             default:
                 System.out.println("Default");
@@ -1043,6 +1050,75 @@ WHERE empleadoquincenal.id_empleado = empleados.id and empleados.code = '00398';
         } catch (SQLException ex) {
             Logger.getLogger(MigrarRHOracleToPostgres.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private static void migrarEmpleadosToJustificador() {
+     
+        /* Generar todos registros de Empleados desde N001 */
+        try {
+            Driver oracleDriver = new oracle.jdbc.driver.OracleDriver();
+            Driver mysqlPostgres = new com.mysql.jdbc.Driver();
+
+            DriverManager.registerDriver(oracleDriver);
+            DriverManager.registerDriver(mysqlPostgres);
+
+            Connection connOracle = DriverManager.getConnection(NETMULTIX_CIMAV_15_XDB, "almacen", "afrika");
+            
+            Properties properties = new Properties();
+            properties.setProperty("user", "root");
+            //properties.setProperty("password", "l0c0xmary");
+            properties.setProperty("useSSL", "false");
+            properties.setProperty("autoReconnect", "true");
+            properties.setProperty("zeroDateTimeBehavior", "convertToNull");
+            Connection connMySql = DriverManager.getConnection(VISITANTES_PRODUCTION, properties);
+            
+            try (Statement stmtOra = connOracle.createStatement(); Statement stmtMySql = connMySql.createStatement()) {
+            
+                List<Integer> ids = new ArrayList<>();
+                String sql = "SELECT * FROM empleados";
+                ResultSet rsVisitantesEmpleados = stmtMySql.executeQuery(sql);
+                while (rsVisitantesEmpleados.next()) {
+                    ids.add(rsVisitantesEmpleados.getInt(1));
+                }
+                
+                sql = "SELECT e.* FROM NO01 e where e.NO01_STATUS != 'B'"; // AND e.NO01_CVE_EMP like '%0076%'";
+                ResultSet rsOra = stmtOra.executeQuery(sql);
+
+                while (rsOra.next()) {
+                    String cveEmp = rsOra.getString("NO01_CVE_EMP").trim();
+                    int consecutivo = Integer.parseInt(cveEmp);
+                    
+                    if (!ids.contains(consecutivo)) {
+                    
+                        cveEmp = stringQuoted(rsOra.getString("NO01_CVE_EMP"));
+                        String nomEmp = stringQuoted(rsOra.getString("NO01_NOM_EMP"));
+
+                        String apellidoPAt = rsOra.getString("NO01_APELLIDO_PAT").trim();
+                        String apellidoMat = rsOra.getString("NO01_APELLIDO_MAT").trim();
+                        String nombre = rsOra.getString("NO01_NOMBRE").trim();
+
+                        String name = stringQuoted(apellidoPAt + " " + apellidoMat + " " + nombre);
+                        apellidoPAt = stringQuoted(apellidoPAt);
+                        apellidoMat = stringQuoted(apellidoMat);
+                        nombre = stringQuoted(nombre);
+
+                        String sqlMigrarEmpleado = "INSERT INTO empleados (id, nombre) VALUES (" + consecutivo + "," + name + " );";
+
+                        System.out.println(sqlMigrarEmpleado);
+                        
+                        //stmtPostgress.execute(sqlMigrarEmpleado);
+                    }
+                }
+                
+                
+            } catch (Exception x) {
+                System.out.println("" +x.getMessage());
+            }
+            
+        } catch (Exception e) {
+            System.out.println("" +e.getMessage());
+        }
+        
     }
     
 }
